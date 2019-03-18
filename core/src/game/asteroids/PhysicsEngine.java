@@ -3,7 +3,7 @@ package game.asteroids;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class PhysicsEngine {
-    private static final float timestep = 1/60;
+    private static final float timestep = 1/60f;
 
     private float accumulator = 0;
     private final World world;
@@ -12,7 +12,7 @@ public class PhysicsEngine {
         this.world = world;
     }
 
-    private void doPhysicsStep(float deltaTime) {
+    public void doPhysicsStep(float deltaTime) {
         // fixed time step
         // max frame time to avoid spiral of death (on slow devices)
         float frameTime = Math.min(deltaTime, 0.25f);
