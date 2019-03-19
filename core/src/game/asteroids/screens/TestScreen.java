@@ -60,7 +60,7 @@ public class TestScreen implements Screen {
         engine.doPhysicsStep(delta);
 
 		Input.update();
-		player.update();
+		Entity.updateEntities();
     }
 
     @Override

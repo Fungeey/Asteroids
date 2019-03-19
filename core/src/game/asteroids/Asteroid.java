@@ -43,4 +43,6 @@ public class Asteroid extends Entity implements Destructable {
     public enum AsteroidSize {
         SMALL, MEDIUM, LARGE
     }
+
+    public void update(){}
 }
