@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Asteroid extends Entity implements Destructable {
-    AsteroidSize size;
+    private AsteroidSize size;
 
     public Asteroid(AsteroidSize size, World world, BodyEditorLoader loader) {
         super(world);

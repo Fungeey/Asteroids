@@ -25,9 +25,9 @@ public class TestScreen implements Screen {
 
     public BodyEditorLoader loader;
 
-    final Asteroids game;
+    private final Asteroids game;
 
-    Player player;
+    private Player player;
 
     public TestScreen(Asteroids game) {
         this.game = game;
