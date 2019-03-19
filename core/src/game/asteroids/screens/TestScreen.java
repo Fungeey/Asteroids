@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import game.asteroids.Asteroid;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
@@ -44,22 +45,12 @@ public class TestScreen implements Screen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        BodyDef def = new BodyDef();
-        def.type = BodyDef.BodyType.DynamicBody;
-        Body body = world.createBody(def);
+        new Asteroid(Asteroid.Size.MEDIUM, world, loader);
 
-        BodyDef temp = new BodyDef();
-        temp.type = BodyDef.BodyType.DynamicBody;
-        Body other = world.createBody(temp);
-        FixtureDef fix = new FixtureDef();
-        fix.density = 1;
-        fix.friction = 0.5f;
-        fix.restitution = 0.3f;
+        new Asteroid(Asteroid.Size.MEDIUM, world, loader);
 
-        loader.attachFixture(body, "asteroid_small", fix, 1);
-        loader.attachFixture(other, "asteroid_large.png", fix, 1);
-        body.applyForceToCenter(new Vector2(0, 10), false);
-        other.setTransform(other.getPosition().add(0, 3), 0);
+        new Asteroid(Asteroid.Size.MEDIUM, world, loader);
+
     }
 
     @Override
