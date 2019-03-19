@@ -7,10 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import game.asteroids.Asteroid;
-import game.asteroids.Asteroids;
-import game.asteroids.BodyEditorLoader;
-import game.asteroids.PhysicsEngine;
+import game.asteroids.*;
+import game.asteroids.Input.Input;
 
 public class TestScreen implements Screen {
 
@@ -29,6 +27,8 @@ public class TestScreen implements Screen {
 
     final Asteroids game;
 
+    Player player;
+
     public TestScreen(Asteroids game) {
         this.game = game;
     }
@@ -45,12 +45,11 @@ public class TestScreen implements Screen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        new Asteroid(Asteroid.Size.MEDIUM, world, loader);
+        //new Asteroid(Asteroid.AsteroidSize.MEDIUM, world, loader);
+        //new Asteroid(Asteroid.AsteroidSize.MEDIUM, world, loader);
+        //new Asteroid(Asteroid.AsteroidSize.MEDIUM, world, loader);
 
-        new Asteroid(Asteroid.Size.MEDIUM, world, loader);
-
-        new Asteroid(Asteroid.Size.MEDIUM, world, loader);
-
+		player = new Player(world, loader);
     }
 
     @Override
@@ -59,6 +58,9 @@ public class TestScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         debug.render(world, camera.combined);
         engine.doPhysicsStep(delta);
+
+		Input.update();
+		player.update();
     }
 
     @Override

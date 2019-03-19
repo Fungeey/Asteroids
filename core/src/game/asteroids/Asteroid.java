@@ -1,17 +1,14 @@
 package game.asteroids;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Asteroid extends Entity implements Destructable {
-    Size size;
+    AsteroidSize size;
 
-    public Asteroid(Size size, World world, BodyEditorLoader loader) {
-        BodyDef def = new BodyDef();
-        def.type = BodyDef.BodyType.DynamicBody;
-        this.body = world.createBody(def);
+    public Asteroid(AsteroidSize size, World world, BodyEditorLoader loader) {
+        super(world);
 
         FixtureDef fix = new FixtureDef();
         fix.density = 10;
@@ -44,7 +41,7 @@ public class Asteroid extends Entity implements Destructable {
         return 0;
     }
 
-    public enum Size {
+    public enum AsteroidSize {
         SMALL, MEDIUM, LARGE
     }
 }
