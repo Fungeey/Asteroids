@@ -20,11 +20,7 @@ public class Player extends Entity{
 	private Vector2 direction;
 
 	public Player(){
-		super(Sprites.PLAYER_SPRITE);
-
-		direction = new Vector2(0, 1);
-
-		body.setLinearDamping(0.5f);
+		this(Vector2.Zero);
 	}
 
 	public Player(Vector2 position){
