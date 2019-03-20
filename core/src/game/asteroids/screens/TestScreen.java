@@ -53,7 +53,7 @@ public class TestScreen implements Screen {
         Entity.initialize(world, loader);
 
         Random rand = new Random();
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 10; i++){
             new Asteroid(Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
             new Asteroid(Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
             new Asteroid(Asteroid.AsteroidSize.LARGE, Entity.randomPosition());

@@ -20,19 +20,17 @@ public class Player extends Entity{
 	private Vector2 direction;
 
 	public Player(){
-		super(Sprites.PLAYER_SPRITE);
+		initialize(Sprites.PLAYER_SPRITE);
 
 		direction = new Vector2(0, 1);
-
 		body.setLinearDamping(0.5f);
 	}
 
 	public Player(Vector2 position){
-		super(Sprites.PLAYER_SPRITE);
+		initialize(Sprites.PLAYER_SPRITE);
 
 		direction = new Vector2(0, 1);
 		body.setTransform(position, body.getAngle());
-
 		body.setLinearDamping(0.5f);
 	}
 
@@ -53,13 +51,15 @@ public class Player extends Entity{
 		else if(Input.keyDown(Input.RIGHT)) body.applyTorque(-turnSpeed, true);
 
 		//Shooting
-		//if(Input.keyDown(Input.SPACE)){
-		//	new Bullet(Bullet.BulletType.PLAYER, direction);
-		//}
+		if(Input.keyDown(Input.SPACE)){
+			new Bullet(Bullet.BulletType.PLAYER, direction);
+		}
 
 		// Hyperjump
-		if(Input.keyDown(Input.LSHIFT))
+		if(Input.keyDown(Input.LSHIFT)){
 			setPosition(randomPosition());
+		}
+			//
 
 		wrap();
 	}

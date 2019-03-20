@@ -1,10 +1,7 @@
 package game.asteroids.entities;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.screens.TestScreen;
 
@@ -21,28 +18,45 @@ public abstract class Entity {
 		loader = _loader;
 	}
 
-    //Vector2 position; // Use body.getPosition() instead
     float rotation;
     Body body;
+    String spriteID;
 
-    Entity(String sprite){
+    Entity(){
 		BodyDef def = new BodyDef();
 		def.type = BodyDef.BodyType.DynamicBody;
 		this.body = world.createBody(def);
 		this.body.setUserData(this);
 
-		FixtureDef fix = new FixtureDef();
-		fix.density = 10;
-		fix.friction = 0.5f;
-		fix.restitution = 0.3f;
-
-		loader.attachFixture(body, sprite, fix,1);
 		entities.add(this);
 	}
 
+	Entity(boolean fixedRotation){
+		BodyDef def = new BodyDef();
+		def.type = BodyDef.BodyType.DynamicBody;
+		def.fixedRotation = true;
+		this.body = world.createBody(def);
+		this.body.setUserData(this);
+
+		entities.add(this);
+	}
+
+	void initialize(String sprite){
+		this.spriteID = sprite;
+		loader.attachFixture(body, sprite, getDefaultFixture(),1);
+	}
+
+	void initialize(String sprite, Shape shape){
+    	this.spriteID = sprite;
+
+    	FixtureDef fix = getDefaultFixture();
+    	fix.shape = shape;
+		body.createFixture(fix);
+	}
+
 	public static void updateEntities(){
-		for (Entity entity : entities) {
-			entity.update();
+		for(int i = 0; i < entities.size(); i++){
+			entities.get(i).update();
 		}
 	}
 
@@ -76,5 +90,13 @@ public abstract class Entity {
     	float w = TestScreen.worldWidth;
     	float h = TestScreen.worldHeight;
     	return new Vector2(TestScreen.rand.nextFloat()*w-w/2, TestScreen.rand.nextFloat()*h-h/2);
+	}
+
+	private FixtureDef getDefaultFixture(){
+		FixtureDef fix = new FixtureDef();
+		fix.density = 10;
+		fix.friction = 0.5f;
+		fix.restitution = 0.3f;
+		return fix;
 	}
 }
