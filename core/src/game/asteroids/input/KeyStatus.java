@@ -1,4 +1,4 @@
-package game.asteroids.Input;
+package game.asteroids.input;
 
 public enum KeyStatus{
 	pressed,

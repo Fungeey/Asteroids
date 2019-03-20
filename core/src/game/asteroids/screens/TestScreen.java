@@ -8,7 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import game.asteroids.*;
-import game.asteroids.Input.Input;
+import game.asteroids.entities.Asteroid;
+import game.asteroids.entities.Entity;
+import game.asteroids.entities.Player;
+import game.asteroids.input.Input;
 
 public class TestScreen implements Screen {
 
@@ -45,11 +48,13 @@ public class TestScreen implements Screen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        //new Asteroid(Asteroid.AsteroidSize.MEDIUM, world, loader);
-        //new Asteroid(Asteroid.AsteroidSize.MEDIUM, world, loader);
-        //new Asteroid(Asteroid.AsteroidSize.MEDIUM, world, loader);
+        Entity.initialize(world, loader);
 
-		player = new Player(world, loader);
+        new Asteroid(Asteroid.AsteroidSize.MEDIUM);
+        new Asteroid(Asteroid.AsteroidSize.SMALL);
+        new Asteroid(Asteroid.AsteroidSize.LARGE);
+
+		player = new Player();
     }
 
     @Override
