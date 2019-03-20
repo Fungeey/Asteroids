@@ -15,9 +15,10 @@ import game.asteroids.input.Input;
 
 import java.util.Random;
 
+import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
+
 public class TestScreen implements Screen {
 
-    public static final float PIXELS_PER_METER = 32;
     public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
     public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
 
