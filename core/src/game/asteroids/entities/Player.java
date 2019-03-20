@@ -23,7 +23,15 @@ public class Player extends Entity{
 		super(Sprites.PLAYER_SPRITE);
 
 		direction = new Vector2(0, 1);
-		position = new Vector2(0, 0);
+
+		body.setLinearDamping(0.5f);
+	}
+
+	public Player(Vector2 position){
+		super(Sprites.PLAYER_SPRITE);
+
+		direction = new Vector2(0, 1);
+		body.setTransform(position, body.getAngle());
 
 		body.setLinearDamping(0.5f);
 	}
@@ -33,8 +41,8 @@ public class Player extends Entity{
 		direction.setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
 
 		if(Input.keyDown(Input.UP)) {
-			Vector2 thrust = new Vector2(direction).nor();
-			body.applyForceToCenter(thrust.scl(speed), true);
+			Vector2 thrust = new Vector2(direction).nor().scl(speed);
+			body.applyForceToCenter(thrust, true);
 		}
 
 		body.setLinearVelocity(body.getLinearVelocity().clamp(0, maxSpeed));
@@ -48,5 +56,11 @@ public class Player extends Entity{
 		//if(Input.keyDown(Input.SPACE)){
 		//	new Bullet(Bullet.BulletType.PLAYER, direction);
 		//}
+
+		// Hyperjump
+		if(Input.keyDown(Input.LSHIFT))
+			setPosition(randomPosition());
+
+		wrap();
 	}
 }

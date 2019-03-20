@@ -13,11 +13,15 @@ import game.asteroids.entities.Entity;
 import game.asteroids.entities.Player;
 import game.asteroids.input.Input;
 
+import java.util.Random;
+
 public class TestScreen implements Screen {
 
     public static final float PIXELS_PER_METER = 32;
     public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
     public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
+
+    public static final Random rand = new Random();
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -29,8 +33,6 @@ public class TestScreen implements Screen {
     public BodyEditorLoader loader;
 
     private final Asteroids game;
-
-    private Player player;
 
     public TestScreen(Asteroids game) {
         this.game = game;
@@ -50,11 +52,14 @@ public class TestScreen implements Screen {
 
         Entity.initialize(world, loader);
 
-        new Asteroid(Asteroid.AsteroidSize.MEDIUM);
-        new Asteroid(Asteroid.AsteroidSize.SMALL);
-        new Asteroid(Asteroid.AsteroidSize.LARGE);
+        Random rand = new Random();
+        for(int i = 0; i < 3; i++){
+            new Asteroid(Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
+            new Asteroid(Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
+            new Asteroid(Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
+        }
 
-		player = new Player();
+		new Player();
     }
 
     @Override

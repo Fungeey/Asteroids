@@ -1,6 +1,11 @@
 package game.asteroids.entities;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import game.asteroids.screens.TestScreen;
 import game.asteroids.utility.Sprites;
+
+import java.util.Random;
 
 public class Asteroid extends Entity implements Destructable {
     private AsteroidSize size;
@@ -9,6 +14,12 @@ public class Asteroid extends Entity implements Destructable {
         super(size == AsteroidSize.SMALL ? Sprites.ASTEROID_SMALL : size == AsteroidSize.MEDIUM ? Sprites.ASTEROID_MEDIUM : Sprites.ASTEROID_LARGE);
         this.size = size;
     }
+
+	public Asteroid(AsteroidSize size, Vector2 position) {
+		super(size == AsteroidSize.SMALL ? Sprites.ASTEROID_SMALL : size == AsteroidSize.MEDIUM ? Sprites.ASTEROID_MEDIUM : Sprites.ASTEROID_LARGE);
+		this.size = size;
+		body.setTransform(position, body.getAngle());
+	}
 
     private String getSprite(AsteroidSize size){
         if(size == AsteroidSize.SMALL)
@@ -35,5 +46,7 @@ public class Asteroid extends Entity implements Destructable {
         SMALL, MEDIUM, LARGE
     }
 
-    public void update(){}
+    public void update(){
+    	wrap();
+	}
 }
