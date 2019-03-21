@@ -31,9 +31,10 @@ public abstract class Entity {
 	private static World world;
 	private static BodyEditorLoader loader;
 	private static AssetManager assets;
+	private static ArrayList<Entity> toDelete = new ArrayList<Entity>();
 	protected Sprite sprite;
 
-	float rotation;
+	short layer;
 	Body body;
 	String spriteID;
 
@@ -43,7 +44,7 @@ public abstract class Entity {
 		assets = _assets;
 	}
 
-    Entity(){
+	Entity() {
 		BodyDef def = new BodyDef();
 		def.type = BodyDef.BodyType.DynamicBody;
 		this.body = world.createBody(def);
@@ -52,10 +53,10 @@ public abstract class Entity {
 		entities.add(this);
 	}
 
-	Entity(boolean fixedRotation){
+	Entity(boolean fixedRotation) {
 		BodyDef def = new BodyDef();
 		def.type = BodyDef.BodyType.DynamicBody;
-		def.fixedRotation = true;
+		def.fixedRotation = fixedRotation;
 		this.body = world.createBody(def);
 		this.body.setUserData(this);
 
@@ -68,28 +69,27 @@ public abstract class Entity {
 		}
 	}
 
-	void initialize(String sprite){
+	void initialize(String sprite) {
 		_initialize(sprite, new CircleShape(), LAYER_DEFAULT, true);
 	}
 
-	void initialize(String sprite, short layer){
+	void initialize(String sprite, short layer) {
 		_initialize(sprite, new CircleShape(), layer, true);
 	}
 
-	void initialize(String sprite, Shape shape){
+	void initialize(String sprite, Shape shape) {
 		_initialize(sprite, shape, LAYER_DEFAULT, false);
 	}
 
-	void initialize(String sprite, Shape shape, short layer){
+	void initialize(String sprite, Shape shape, short layer) {
 		_initialize(sprite, shape, layer, false);
 	}
 
-
-	private FixtureDef getDefaultFixture(){
+	private FixtureDef getDefaultFixture() {
 		return getDefaultFixture(LAYER_DEFAULT);
 	}
 
-	private FixtureDef getDefaultFixture(short layer){
+	private FixtureDef getDefaultFixture(short layer) {
 		FixtureDef fix = new FixtureDef();
 		fix.density = 10;
 		fix.friction = 0.5f;
@@ -101,25 +101,25 @@ public abstract class Entity {
 		return fix;
 	}
 
-	private short getMask(short layer){
-    	if(layer == LAYER_DEFAULT)
-    		return MASK_DEFAULT;
-		if(layer == LAYER_ASTEROIDS)
+	private short getMask(short layer) {
+		if (layer == LAYER_DEFAULT)
+			return MASK_DEFAULT;
+		if (layer == LAYER_ASTEROIDS)
 			return MASK_ASTEROIDS;
-		if(layer == LAYER_PLAYER)
+		if (layer == LAYER_PLAYER)
 			return MASK_PLAYER;
 		return MASK_PLAYER_BULLET;
 	}
 
-
-
-	public static void updateEntities(){
-		for(int i = 0; i < entities.size(); i++){
+	public static void updateEntities() {
+		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).update();
 		}
+		deleteEntities();
 	}
 
 	private void _initialize(String spriteID, Shape shape, short layer, boolean useLoader) {
+		this.layer = layer;
 		this.spriteID = spriteID;
 		this.sprite = new Sprite(assets.get(this.spriteID, Texture.class));
 		sprite.setOriginCenter();
@@ -142,38 +142,53 @@ public abstract class Entity {
 		batch.draw(sprite, pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
 	}
 
-    void wrap(){
+	void wrap() {
 		float buffer = 0.25f;
-    	float w = TestScreen.worldWidth/2 + buffer;
-    	float h = TestScreen.worldHeight/2 + buffer;
+		float w = TestScreen.worldWidth / 2 + buffer;
+		float h = TestScreen.worldHeight / 2 + buffer;
 
 		Vector2 pos = body.getPosition();
-		if(pos.x < -w)
+		if (pos.x < -w)
 			setPosition(w, pos.y);
-		else if(pos.x > w)
+		else if (pos.x > w)
 			setPosition(-w, pos.y);
-		if(pos.y < -h)
+		if (pos.y < -h)
 			setPosition(pos.x, h);
-		else if(pos.y > h)
+		else if (pos.y > h)
 			setPosition(pos.x, -h);
 	}
 
-	void setPosition(float x, float y){
+	void setPosition(float x, float y) {
 		setPosition(new Vector2(x, y));
 	}
 
-	void setPosition(Vector2 position){
+	void setPosition(Vector2 position) {
 		body.setTransform(position, body.getAngle());
 	}
 
-	public static Vector2 randomPosition(){
-    	float w = TestScreen.worldWidth;
-    	float h = TestScreen.worldHeight;
-    	return new Vector2(TestScreen.rand.nextFloat()*w-w/2, TestScreen.rand.nextFloat()*h-h/2);
+	public static Vector2 randomPosition() {
+		float w = TestScreen.worldWidth;
+		float h = TestScreen.worldHeight;
+		return new Vector2(TestScreen.rand.nextFloat() * w - w / 2, TestScreen.rand.nextFloat() * h - h / 2);
 	}
 
-	public void delete() {
-		body.getWorld().destroyBody(body);
-		entities.remove(this);
+	void delete() {
+		if(!toDelete.contains(this))
+			toDelete.add(this);
+	}
+
+	private static void deleteEntities(){
+		for(int i = toDelete.size()-1; i >= 0; i--){
+			Entity e = toDelete.get(i);
+
+			if (e instanceof Destructable)
+				((Destructable) e).onDestroy();
+
+			e.body.getWorld().destroyBody(e.body);
+			entities.remove(e);
+
+			toDelete.remove(e);
+		}
+
 	}
 }

@@ -63,4 +63,15 @@ public class Asteroid extends Entity implements Destructable {
     public void update() {
         wrap();
     }
+
+	@Override
+	public void onDestroy() {
+    	if(size == AsteroidSize.LARGE){
+    		new Asteroid(AsteroidSize.MEDIUM, body.getPosition());
+			new Asteroid(AsteroidSize.MEDIUM, body.getPosition());
+		}else if(size == AsteroidSize.MEDIUM){
+			new Asteroid(AsteroidSize.SMALL, body.getPosition());
+			new Asteroid(AsteroidSize.SMALL, body.getPosition());
+		}
+	}
 }

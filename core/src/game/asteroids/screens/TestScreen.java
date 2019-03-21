@@ -13,6 +13,7 @@ import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.Asteroid;
+import game.asteroids.entities.AsteroidsCollisionListener;
 import game.asteroids.entities.Entity;
 import game.asteroids.entities.Player;
 import game.asteroids.input.Input;
@@ -39,6 +40,8 @@ public class TestScreen implements Screen {
 
     private final Asteroids game;
 
+    private final AsteroidsCollisionListener collisionListener = new AsteroidsCollisionListener();
+
     public TestScreen(Asteroids game) {
         this.game = game;
     }
@@ -46,6 +49,7 @@ public class TestScreen implements Screen {
     @Override
     public void show() {
         world = new World(Vector2.Zero, true);
+		world.setContactListener(collisionListener);
         loader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
         loadTextures();
         engine = new PhysicsEngine(world);
@@ -56,9 +60,10 @@ public class TestScreen implements Screen {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
+		Random rand = new Random();
+
         Entity.initialize(world, loader, game.manager);
 
-        Random rand = new Random();
         for(int i = 0; i < 10; i++){
             new Asteroid(Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
             new Asteroid(Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
@@ -72,12 +77,12 @@ public class TestScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        debug.render(world, camera.combined);
+        //debug.render(world, camera.combined);
         engine.doPhysicsStep(delta);
 
-        batch.begin();
-        Entity.drawEntities(batch, game.manager);
-        batch.end();
+		batch.begin();
+		Entity.drawEntities(batch, game.manager);
+		batch.end();
 
 		Input.update();
 		Entity.updateEntities();
@@ -112,6 +117,8 @@ public class TestScreen implements Screen {
         game.manager.load("asteroid_small.png", Texture.class);
         game.manager.load("asteroid_medium.png", Texture.class);
         game.manager.load("asteroid_large.png", Texture.class);
+		game.manager.load("bullet_player.png", Texture.class);
+		game.manager.load("bullet_saucer.png", Texture.class);
         game.manager.load("ship.png", Texture.class);
         game.manager.load("ship_burn.png", Texture.class);
         game.manager.finishLoading();
