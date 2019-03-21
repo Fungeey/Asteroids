@@ -1,12 +1,9 @@
 package game.asteroids.entities;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import game.asteroids.utility.Sprites;
-
-import static game.asteroids.screens.TestScreen.PIXELS_PER_METER;
 
 public class Bullet extends Entity{
 	private static final int bulletRadius = 6;
@@ -14,9 +11,10 @@ public class Bullet extends Entity{
 
 	Bullet(BulletType type, Vector2 velocity){
 		super(true);
+
 		this.type = type;
 
-		initialize(getSprite(), getShape());
+		initialize(getSprite(), getShape(), LAYER_PLAYER_BULLET);
 		body.setAngularDamping(Float.MAX_VALUE);
 		body.applyForceToCenter(velocity, true);
 	}
@@ -25,7 +23,7 @@ public class Bullet extends Entity{
 		super(true);
 		this.type = type;
 
-		initialize(getSprite(), getShape());
+		initialize(getSprite(), getShape(), LAYER_PLAYER_BULLET);
 		setPosition(position);
 		body.setAngularDamping(Float.MAX_VALUE);
 		body.applyForceToCenter(velocity, true);
@@ -33,7 +31,7 @@ public class Bullet extends Entity{
 
 	private Shape getShape(){
 		CircleShape circle = new CircleShape();
-		circle.setRadius(bulletRadius/PIXELS_PER_METER);
+		circle.setRadius(bulletRadius/Sprites.PIXELS_PER_METER);
 
 		return circle;
 	}

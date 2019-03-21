@@ -14,14 +14,14 @@ public class Asteroid extends Entity implements Destructable {
     public Asteroid(AsteroidSize size) {
     	this.size = size;
 
-    	initialize(getSprite());
+    	initialize(getSprite(), LAYER_ASTEROIDS);
 		applyRandomVelocity();
     }
 
 	public Asteroid(AsteroidSize size, Vector2 position) {
 		this.size = size;
 
-		initialize(getSprite());
+		initialize(getSprite(), LAYER_ASTEROIDS);
 		body.setTransform(position, body.getAngle());
 		applyRandomVelocity();
 	}

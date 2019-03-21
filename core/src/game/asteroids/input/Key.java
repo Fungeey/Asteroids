@@ -17,12 +17,12 @@ class Key {
 		if (pressed) {
 			if (status == KeyStatus.up)
 				status = KeyStatus.pressed;
-			if (status == KeyStatus.pressed)
+			else if (status == KeyStatus.pressed)
 				status = KeyStatus.down;
 		} else {
 			if (status == KeyStatus.down)
 				status = KeyStatus.released;
-			if (status == KeyStatus.released)
+			else if (status == KeyStatus.released)
 				status = KeyStatus.up;
 		}
 	}

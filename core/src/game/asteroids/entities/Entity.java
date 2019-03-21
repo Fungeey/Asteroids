@@ -10,6 +10,18 @@ import java.util.ArrayList;
 public abstract class Entity {
 	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
 
+	//<editor-fold desc="LAYER MASK SETUP">
+	static final short LAYER_DEFAULT = 0x0001;
+	static final short LAYER_ASTEROIDS = 0x002;
+	static final short LAYER_PLAYER = 0x0004;
+	static final short LAYER_PLAYER_BULLET = 0x0008;
+
+	private static final short MASK_DEFAULT = -1; // Collide with everything
+	private static final short MASK_ASTEROIDS = LAYER_PLAYER | LAYER_PLAYER_BULLET;
+	private static final short MASK_PLAYER = LAYER_ASTEROIDS;
+	private static final short MASK_PLAYER_BULLET = LAYER_ASTEROIDS;
+	//</editor-fold>
+
 	private static World world;
 	private static BodyEditorLoader loader;
 
@@ -46,6 +58,11 @@ public abstract class Entity {
 		loader.attachFixture(body, sprite, getDefaultFixture(),1);
 	}
 
+	void initialize(String sprite, short layer){
+		this.spriteID = sprite;
+		loader.attachFixture(body, sprite, getDefaultFixture(layer),1);
+	}
+
 	void initialize(String sprite, Shape shape){
     	this.spriteID = sprite;
 
@@ -53,6 +70,42 @@ public abstract class Entity {
     	fix.shape = shape;
 		body.createFixture(fix);
 	}
+
+	void initialize(String sprite, Shape shape, short layer){
+		this.spriteID = sprite;
+
+		FixtureDef fix = getDefaultFixture(layer);
+		fix.shape = shape;
+		body.createFixture(fix);
+	}
+
+	private FixtureDef getDefaultFixture(){
+		return getDefaultFixture(LAYER_DEFAULT);
+	}
+
+	private FixtureDef getDefaultFixture(short layer){
+		FixtureDef fix = new FixtureDef();
+		fix.density = 10;
+		fix.friction = 0.5f;
+		fix.restitution = 0.3f;
+
+		fix.filter.categoryBits = layer;
+		fix.filter.maskBits = getMask(layer);
+
+		return fix;
+	}
+
+	private short getMask(short layer){
+    	if(layer == LAYER_DEFAULT)
+    		return MASK_DEFAULT;
+		if(layer == LAYER_ASTEROIDS)
+			return MASK_ASTEROIDS;
+		if(layer == LAYER_PLAYER)
+			return MASK_PLAYER;
+		return MASK_PLAYER_BULLET;
+	}
+
+
 
 	public static void updateEntities(){
 		for(int i = 0; i < entities.size(); i++){
@@ -90,13 +143,5 @@ public abstract class Entity {
     	float w = TestScreen.worldWidth;
     	float h = TestScreen.worldHeight;
     	return new Vector2(TestScreen.rand.nextFloat()*w-w/2, TestScreen.rand.nextFloat()*h-h/2);
-	}
-
-	private FixtureDef getDefaultFixture(){
-		FixtureDef fix = new FixtureDef();
-		fix.density = 10;
-		fix.friction = 0.5f;
-		fix.restitution = 0.3f;
-		return fix;
 	}
 }
