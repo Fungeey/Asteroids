@@ -171,4 +171,9 @@ public abstract class Entity {
     	float h = TestScreen.worldHeight;
     	return new Vector2(TestScreen.rand.nextFloat()*w-w/2, TestScreen.rand.nextFloat()*h-h/2);
 	}
+
+	public void delete() {
+		body.getWorld().destroyBody(body);
+		entities.remove(this);
+	}
 }
