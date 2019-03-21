@@ -1,9 +1,15 @@
 package game.asteroids.entities;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.screens.TestScreen;
+import game.asteroids.utility.Sprites;
 
 import java.util.ArrayList;
 
@@ -24,15 +30,18 @@ public abstract class Entity {
 
 	private static World world;
 	private static BodyEditorLoader loader;
+	private static AssetManager assets;
+	protected Sprite sprite;
 
-	public static void initialize(World _world, BodyEditorLoader _loader){
+	float rotation;
+	Body body;
+	String spriteID;
+
+	public static void initialize(World _world, BodyEditorLoader _loader, AssetManager _assets) {
 		world = _world;
 		loader = _loader;
+		assets = _assets;
 	}
-
-    float rotation;
-    Body body;
-    String spriteID;
 
     Entity(){
 		BodyDef def = new BodyDef();
@@ -53,31 +62,28 @@ public abstract class Entity {
 		entities.add(this);
 	}
 
+	public static void drawEntities(SpriteBatch batch, AssetManager manager) {
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).draw(batch, manager);
+		}
+	}
+
 	void initialize(String sprite){
-		this.spriteID = sprite;
-		loader.attachFixture(body, sprite, getDefaultFixture(),1);
+		_initialize(sprite, new CircleShape(), LAYER_DEFAULT, true);
 	}
 
 	void initialize(String sprite, short layer){
-		this.spriteID = sprite;
-		loader.attachFixture(body, sprite, getDefaultFixture(layer),1);
+		_initialize(sprite, new CircleShape(), layer, true);
 	}
 
 	void initialize(String sprite, Shape shape){
-    	this.spriteID = sprite;
-
-    	FixtureDef fix = getDefaultFixture();
-    	fix.shape = shape;
-		body.createFixture(fix);
+		_initialize(sprite, shape, LAYER_DEFAULT, false);
 	}
 
 	void initialize(String sprite, Shape shape, short layer){
-		this.spriteID = sprite;
-
-		FixtureDef fix = getDefaultFixture(layer);
-		fix.shape = shape;
-		body.createFixture(fix);
+		_initialize(sprite, shape, layer, false);
 	}
+
 
 	private FixtureDef getDefaultFixture(){
 		return getDefaultFixture(LAYER_DEFAULT);
@@ -113,7 +119,28 @@ public abstract class Entity {
 		}
 	}
 
+	private void _initialize(String spriteID, Shape shape, short layer, boolean useLoader) {
+		this.spriteID = spriteID;
+		this.sprite = new Sprite(assets.get(this.spriteID, Texture.class));
+		sprite.setOriginCenter();
+
+		if (useLoader) {
+			loader.attachFixture(body, spriteID, getDefaultFixture(layer), sprite.getWidth() / Sprites.PIXELS_PER_METER);
+		} else {
+			FixtureDef fix = getDefaultFixture(layer);
+			fix.shape = shape;
+			body.createFixture(fix);
+		}
+
+		shape.dispose();
+	}
+
 	public abstract void update();
+
+	public void draw(SpriteBatch batch, AssetManager manager) {
+		Vector2 pos = body.getPosition();
+		batch.draw(sprite, pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
+	}
 
     void wrap(){
 		float buffer = 0.25f;

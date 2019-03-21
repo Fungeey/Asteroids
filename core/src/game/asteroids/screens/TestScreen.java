@@ -4,10 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import game.asteroids.*;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
+import game.asteroids.Asteroids;
+import game.asteroids.BodyEditorLoader;
+import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.Asteroid;
 import game.asteroids.entities.Entity;
 import game.asteroids.entities.Player;
@@ -43,15 +47,16 @@ public class TestScreen implements Screen {
     public void show() {
         world = new World(Vector2.Zero, true);
         loader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
-
+        loadTextures();
         engine = new PhysicsEngine(world);
         debug = new Box2DDebugRenderer();
-        camera = new OrthographicCamera(worldWidth, worldHeight);
+        debug.setDrawVelocities(true);
+        camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
         camera.position.set(worldWidth / 2, worldHeight / 2, 0);
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        Entity.initialize(world, loader);
+        Entity.initialize(world, loader, game.manager);
 
         Random rand = new Random();
         for(int i = 0; i < 10; i++){
@@ -69,6 +74,10 @@ public class TestScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         debug.render(world, camera.combined);
         engine.doPhysicsStep(delta);
+
+        batch.begin();
+        Entity.drawEntities(batch, game.manager);
+        batch.end();
 
 		Input.update();
 		Entity.updateEntities();
@@ -97,5 +106,14 @@ public class TestScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public void loadTextures() {
+        game.manager.load("asteroid_small.png", Texture.class);
+        game.manager.load("asteroid_medium.png", Texture.class);
+        game.manager.load("asteroid_large.png", Texture.class);
+        game.manager.load("ship.png", Texture.class);
+        game.manager.load("ship_burn.png", Texture.class);
+        game.manager.finishLoading();
     }
 }

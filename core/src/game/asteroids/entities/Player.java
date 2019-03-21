@@ -1,11 +1,13 @@
 package game.asteroids.entities;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 
-public class Player extends Entity{
+public class Player extends Entity {
 	private final float turnSpeed = 20f;
 	private final float speed = 15f;
 	private final float maxSpeed = 20f;
@@ -17,14 +19,14 @@ public class Player extends Entity{
 
 	private Vector2 direction;
 
-	public Player(){
+	public Player() {
 		initialize(Sprites.PLAYER_SPRITE, Entity.LAYER_PLAYER);
 
 		direction = new Vector2(0, 1);
 		body.setLinearDamping(0.5f);
 	}
 
-	public Player(Vector2 position){
+	public Player(Vector2 position) {
 		initialize(Sprites.PLAYER_SPRITE, Entity.LAYER_PLAYER);
 
 		direction = new Vector2(0, 1);
@@ -32,11 +34,11 @@ public class Player extends Entity{
 		body.setLinearDamping(0.5f);
 	}
 
-	public void update(){
+	public void update() {
 		// Thrusting
 		direction.setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
 
-		if(Input.keyDown(Input.UP)) {
+		if (Input.keyDown(Input.UP)) {
 			Vector2 thrust = new Vector2(direction).nor().scl(speed);
 			body.applyForceToCenter(thrust, true);
 		}
@@ -45,17 +47,23 @@ public class Player extends Entity{
 
 		// Rotation
 		body.setAngularVelocity(0);
-		if(Input.keyDown(Input.LEFT)) body.applyTorque(turnSpeed, true);
-		else if(Input.keyDown(Input.RIGHT)) body.applyTorque(-turnSpeed, true);
+		if (Input.keyDown(Input.LEFT)) body.applyTorque(turnSpeed, true);
+		else if (Input.keyDown(Input.RIGHT)) body.applyTorque(-turnSpeed, true);
 
 		//Shooting
-		if(Input.keyPressed(Input.SPACE))
+		if (Input.keyPressed(Input.SPACE))
 			new Bullet(Bullet.BulletType.PLAYER, direction.nor().scl(shootSpeed), body.getPosition());
 
 		// Hyperjump
-		if(Input.keyPressed(Input.LSHIFT))
+		if (Input.keyPressed(Input.LSHIFT))
 			setPosition(randomPosition());
 
 		wrap();
+	}
+
+	@Override
+	public void draw(SpriteBatch batch, AssetManager manager) {
+		Vector2 pos = body.getPosition();
+		batch.draw(sprite, pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
 	}
 }

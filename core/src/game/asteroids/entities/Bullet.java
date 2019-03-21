@@ -42,6 +42,7 @@ public class Bullet extends Entity{
 		return Sprites.BULLET_SAUCER;
 	}
 
+
 	public enum BulletType {
 		PLAYER, SAUCER
 	}
@@ -49,4 +50,5 @@ public class Bullet extends Entity{
 	public void update(){
 		wrap();
 	}
+
 }
