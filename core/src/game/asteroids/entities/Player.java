@@ -1,6 +1,8 @@
 package game.asteroids.entities;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +16,8 @@ public class Player extends Entity {
 
 	private final float shootSpeed = 200f;
 
+	private Sprite shipBurn;
+
 	public static int lives;
 	public static int score;
 
@@ -22,12 +26,18 @@ public class Player extends Entity {
 	public Player() {
 		initialize(Sprites.PLAYER_SPRITE, Entity.LAYER_PLAYER);
 
+		shipBurn = new Sprite(assets.get(Sprites.PLAYER_BURN, Texture.class));
+		shipBurn.setOriginCenter();
+
 		direction = new Vector2(0, 1);
 		body.setLinearDamping(0.5f);
 	}
 
 	public Player(Vector2 position) {
 		initialize(Sprites.PLAYER_SPRITE, Entity.LAYER_PLAYER);
+
+		shipBurn = new Sprite(assets.get(Sprites.PLAYER_BURN, Texture.class));
+		shipBurn.setOriginCenter();
 
 		direction = new Vector2(0, 1);
 		body.setTransform(position, body.getAngle());
@@ -64,6 +74,16 @@ public class Player extends Entity {
 	@Override
 	public void draw(SpriteBatch batch, AssetManager manager) {
 		Vector2 pos = body.getPosition();
-		batch.draw(sprite, pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
+		batch.draw(getSprite(), pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
+	}
+
+	private Sprite getSprite(){
+		if(Input.keyDown(Input.UP)){
+			if(elapsedTicks % 3 == 0)
+				return shipBurn;
+			return sprite;
+		}else{
+			return sprite;
+		}
 	}
 }

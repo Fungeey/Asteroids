@@ -12,10 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
-import game.asteroids.entities.Asteroid;
-import game.asteroids.entities.AsteroidsCollisionListener;
-import game.asteroids.entities.Entity;
-import game.asteroids.entities.Player;
+import game.asteroids.entities.*;
 import game.asteroids.input.Input;
 
 import java.util.Random;
@@ -24,103 +21,114 @@ import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
 
 public class TestScreen implements Screen {
 
-    public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
-    public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
+	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
+	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
 
-    public static final Random rand = new Random();
+	public static final Random rand = new Random();
 
-    private SpriteBatch batch;
-    private OrthographicCamera camera;
+	private SpriteBatch batch;
+	private OrthographicCamera camera;
+	private OrthographicCamera GUICamera;
 
-    private PhysicsEngine engine;
-    private World world;
-    private Box2DDebugRenderer debug;
+	private PhysicsEngine engine;
+	private World world;
+	private Box2DDebugRenderer debug;
 
-    public BodyEditorLoader loader;
+	private final Asteroids game;
+	private final AsteroidsCollisionListener collisionListener = new AsteroidsCollisionListener();
 
-    private final Asteroids game;
+	public TestScreen(Asteroids game) {
+		this.game = game;
+	}
 
-    private final AsteroidsCollisionListener collisionListener = new AsteroidsCollisionListener();
-
-    public TestScreen(Asteroids game) {
-        this.game = game;
-    }
-
-    @Override
-    public void show() {
-        world = new World(Vector2.Zero, true);
+	@Override
+	public void show() {
+		world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
-        loader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
-        loadTextures();
-        engine = new PhysicsEngine(world);
-        debug = new Box2DDebugRenderer();
-        debug.setDrawVelocities(true);
-        camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
-        camera.position.set(worldWidth / 2, worldHeight / 2, 0);
-        batch = new SpriteBatch();
-        batch.setProjectionMatrix(camera.combined);
+
+		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
+		loadTextures();
+
+		engine = new PhysicsEngine(world);
+		debug = new Box2DDebugRenderer();
+		debug.setDrawVelocities(true);
+
+		camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
+		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
+
+		float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
+		GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
+
+		batch = new SpriteBatch();
+		batch.setProjectionMatrix(camera.combined);
 
 		Random rand = new Random();
 
-        Entity.initialize(world, loader, game.manager);
+		Entity.initialize(world, bodyLoader, game.manager);
 
-        for(int i = 0; i < 10; i++){
-            new Asteroid(Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
-            new Asteroid(Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
-            new Asteroid(Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
-        }
+		for (int i = 0; i < 10; i++) {
+			new Asteroid(Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
+			new Asteroid(Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
+			new Asteroid(Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
+		}
 
 		new Player();
-    }
+	}
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        //debug.render(world, camera.combined);
-        engine.doPhysicsStep(delta);
+	@Override
+	public void render(float delta) {
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		//debug.render(world, camera.combined);
+		engine.doPhysicsStep(delta);
 
 		batch.begin();
-		Entity.drawEntities(batch, game.manager);
+		{
+			batch.setProjectionMatrix(camera.combined);
+			Entity.drawEntities(batch, game.manager);
+
+			batch.setProjectionMatrix(GUICamera.combined);
+			GUI.draw(batch);
+		}
 		batch.end();
 
 		Input.update();
 		Entity.updateEntities();
-    }
+	}
 
-    @Override
-    public void resize(int width, int height) {
+	@Override
+	public void resize(int width, int height) {
 
-    }
+	}
 
-    @Override
-    public void pause() {
+	@Override
+	public void pause() {
 
-    }
+	}
 
-    @Override
-    public void resume() {
+	@Override
+	public void resume() {
 
-    }
+	}
 
-    @Override
-    public void hide() {
+	@Override
+	public void hide() {
 
-    }
+	}
 
-    @Override
-    public void dispose() {
+	@Override
+	public void dispose() {
+		GUI.dispose();
+	}
 
-    }
-
-    public void loadTextures() {
-        game.manager.load("asteroid_small.png", Texture.class);
-        game.manager.load("asteroid_medium.png", Texture.class);
-        game.manager.load("asteroid_large.png", Texture.class);
+	private void loadTextures() {
+		game.manager.load("asteroid_small.png", Texture.class);
+		game.manager.load("asteroid_medium.png", Texture.class);
+		game.manager.load("asteroid_large.png", Texture.class);
 		game.manager.load("bullet_player.png", Texture.class);
 		game.manager.load("bullet_saucer.png", Texture.class);
-        game.manager.load("ship.png", Texture.class);
-        game.manager.load("ship_burn.png", Texture.class);
-        game.manager.finishLoading();
-    }
+		game.manager.load("ship.png", Texture.class);
+		game.manager.load("ship_burn.png", Texture.class);
+		game.manager.finishLoading();
+	}
 }

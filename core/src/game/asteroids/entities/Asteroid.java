@@ -41,6 +41,7 @@ public class Asteroid extends Entity implements Destructable {
         randomizeAngle();
         Vector2 thrust = new Vector2(0, 1).setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
         body.applyForceToCenter(thrust.nor().scl(TestScreen.rand.nextFloat() * startVelocity), true);
+        body.applyTorque(10f, true);
     }
 
     @Override

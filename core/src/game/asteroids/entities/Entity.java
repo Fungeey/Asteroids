@@ -30,9 +30,11 @@ public abstract class Entity {
 
 	private static World world;
 	private static BodyEditorLoader loader;
-	private static AssetManager assets;
+	protected static AssetManager assets;
 	private static ArrayList<Entity> toDelete = new ArrayList<Entity>();
 	protected Sprite sprite;
+
+	protected static long elapsedTicks = 0;
 
 	short layer;
 	Body body;
@@ -61,12 +63,6 @@ public abstract class Entity {
 		this.body.setUserData(this);
 
 		entities.add(this);
-	}
-
-	public static void drawEntities(SpriteBatch batch, AssetManager manager) {
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).draw(batch, manager);
-		}
 	}
 
 	void initialize(String sprite) {
@@ -101,23 +97,6 @@ public abstract class Entity {
 		return fix;
 	}
 
-	private short getMask(short layer) {
-		if (layer == LAYER_DEFAULT)
-			return MASK_DEFAULT;
-		if (layer == LAYER_ASTEROIDS)
-			return MASK_ASTEROIDS;
-		if (layer == LAYER_PLAYER)
-			return MASK_PLAYER;
-		return MASK_PLAYER_BULLET;
-	}
-
-	public static void updateEntities() {
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update();
-		}
-		deleteEntities();
-	}
-
 	private void _initialize(String spriteID, Shape shape, short layer, boolean useLoader) {
 		this.layer = layer;
 		this.spriteID = spriteID;
@@ -133,6 +112,30 @@ public abstract class Entity {
 		}
 
 		shape.dispose();
+	}
+
+	private short getMask(short layer) {
+		if (layer == LAYER_DEFAULT)
+			return MASK_DEFAULT;
+		if (layer == LAYER_ASTEROIDS)
+			return MASK_ASTEROIDS;
+		if (layer == LAYER_PLAYER)
+			return MASK_PLAYER;
+		return MASK_PLAYER_BULLET;
+	}
+
+	public static void updateEntities() {
+		elapsedTicks++;
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).update();
+		}
+		deleteEntities();
+	}
+
+	public static void drawEntities(SpriteBatch batch, AssetManager manager) {
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).draw(batch, manager);
+		}
 	}
 
 	public abstract void update();
@@ -186,9 +189,7 @@ public abstract class Entity {
 
 			e.body.getWorld().destroyBody(e.body);
 			entities.remove(e);
-
 			toDelete.remove(e);
 		}
-
 	}
 }
