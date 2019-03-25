@@ -13,6 +13,9 @@ import game.asteroids.utility.Sprites;
 
 import java.util.ArrayList;
 
+/**
+ * Generic game entity with physics capabilities and a sprite to draw.
+ */
 public abstract class Entity {
 	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
 

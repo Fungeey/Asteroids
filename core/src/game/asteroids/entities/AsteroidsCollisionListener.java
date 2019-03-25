@@ -5,6 +5,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+/**
+ * Helper class that defines what happens when two Entities collide based on their class type
+ */
 public class AsteroidsCollisionListener implements ContactListener {
 	public void beginContact(Contact contact){
 		Entity a = (Entity) contact.getFixtureA().getBody().getUserData();
@@ -23,6 +26,8 @@ public class AsteroidsCollisionListener implements ContactListener {
 	// Player bullet - Asteroid
 
 	public void endContact(Contact contact) {}
+
 	public void preSolve(Contact contact, Manifold oldManifold){}
+
 	public void postSolve(Contact contact, ContactImpulse impulse){}
 }

@@ -5,6 +5,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import game.asteroids.utility.Sprites;
 
+/**
+ * Bullet Entity, comes in two types, Player and Saucer, based on how they how different properties
+ */
 public class Bullet extends Entity{
 	private static final int bulletRadius = 6;
 	private BulletType type;

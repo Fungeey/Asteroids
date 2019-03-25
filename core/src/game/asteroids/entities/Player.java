@@ -9,6 +9,10 @@ import com.badlogic.gdx.math.Vector2;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 
+/**
+ * Player Entity, controllable by the player.
+ * It has 3 abilities: shooting bullets, thrusting, and teleportation
+ */
 public class Player extends Entity {
 	private final float turnSpeed = 20f;
 	private final float speed = 15f;
