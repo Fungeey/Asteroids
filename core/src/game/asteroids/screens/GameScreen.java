@@ -20,7 +20,7 @@ import java.util.Random;
 
 import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
 
-public class MainScreen implements Screen {
+public class GameScreen implements Screen {
 
 	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
 	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
@@ -38,7 +38,7 @@ public class MainScreen implements Screen {
 	private final Asteroids game;
 	private final CollisionHandler collisionListener = new CollisionHandler();
 
-	public MainScreen(Asteroids game) {
+	public GameScreen(Asteroids game) {
 		this.game = game;
 	}
 

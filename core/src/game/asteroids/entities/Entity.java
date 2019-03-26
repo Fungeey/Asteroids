@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import game.asteroids.BodyEditorLoader;
-import game.asteroids.screens.MainScreen;
+import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 
 import java.util.ArrayList;
@@ -151,20 +151,10 @@ public abstract class Entity {
 		batch.draw(sprite, pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
 	}
 
-	void wrap() {
-		float buffer = 0.25f;
-		float w = MainScreen.worldWidth / 2 + buffer;
-		float h = MainScreen.worldHeight / 2 + buffer;
-
-		Vector2 pos = body.getPosition();
-		if (pos.x < -w)
-			setPosition(w, pos.y);
-		else if (pos.x > w)
-			setPosition(-w, pos.y);
-		if (pos.y < -h)
-			setPosition(pos.x, h);
-		else if (pos.y > h)
-			setPosition(pos.x, -h);
+	public static Vector2 randomPosition() {
+		float w = GameScreen.worldWidth;
+		float h = GameScreen.worldHeight;
+		return new Vector2(GameScreen.rand.nextFloat() * w - w / 2, GameScreen.rand.nextFloat() * h - h / 2);
 	}
 
 	void setPosition(float x, float y) {
@@ -175,10 +165,20 @@ public abstract class Entity {
 		body.setTransform(position, body.getAngle());
 	}
 
-	public static Vector2 randomPosition() {
-		float w = MainScreen.worldWidth;
-		float h = MainScreen.worldHeight;
-		return new Vector2(MainScreen.rand.nextFloat() * w - w / 2, MainScreen.rand.nextFloat() * h - h / 2);
+	void wrap() {
+		float buffer = 0.25f;
+		float w = GameScreen.worldWidth / 2 + buffer;
+		float h = GameScreen.worldHeight / 2 + buffer;
+
+		Vector2 pos = body.getPosition();
+		if (pos.x < -w)
+			setPosition(w, pos.y);
+		else if (pos.x > w)
+			setPosition(-w, pos.y);
+		if (pos.y < -h)
+			setPosition(pos.x, h);
+		else if (pos.y > h)
+			setPosition(pos.x, -h);
 	}
 
 	void delete() {
