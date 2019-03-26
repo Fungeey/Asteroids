@@ -2,7 +2,7 @@ package game.asteroids;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
-import game.asteroids.screens.TestScreen;
+import game.asteroids.screens.MainScreen;
 
 public class Asteroids extends Game {
 
@@ -11,7 +11,7 @@ public class Asteroids extends Game {
     @Override
     public void create() {
         manager = new AssetManager();
-        this.setScreen(new TestScreen(this));
+        this.setScreen(new MainScreen(this));
     }
 
     @Override

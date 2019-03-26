@@ -2,7 +2,7 @@ package game.asteroids.entities;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import game.asteroids.screens.TestScreen;
+import game.asteroids.screens.MainScreen;
 import game.asteroids.utility.Sprites;
 
 /**
@@ -37,13 +37,13 @@ public class Asteroid extends Entity implements Destructable {
 	}
 
 	private void randomizeAngle() {
-		body.setTransform(body.getPosition(), TestScreen.rand.nextInt(360) * MathUtils.degreesToRadians);
+		body.setTransform(body.getPosition(), MainScreen.rand.nextInt(360) * MathUtils.degreesToRadians);
 	}
 
 	private void applyRandomVelocity() {
 		randomizeAngle();
 		Vector2 thrust = new Vector2(0, 1).setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
-		body.applyForceToCenter(thrust.nor().scl(TestScreen.rand.nextFloat() * startVelocity), true);
+		body.applyForceToCenter(thrust.nor().scl(MainScreen.rand.nextFloat() * startVelocity), true);
 		body.applyTorque(10f, true);
 	}
 
@@ -64,6 +64,7 @@ public class Asteroid extends Entity implements Destructable {
 		SMALL, MEDIUM, LARGE
 	}
 
+	@Override
 	public void update() {
 		wrap();
 	}

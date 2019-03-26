@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import game.asteroids.BodyEditorLoader;
-import game.asteroids.screens.TestScreen;
+import game.asteroids.screens.MainScreen;
 import game.asteroids.utility.Sprites;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public abstract class Entity {
 	protected Sprite sprite;
 
 	protected static long elapsedTicks = 0;
+	protected static float elapsedSeconds = 0;
 
 	short layer;
 	Body body;
@@ -127,8 +128,10 @@ public abstract class Entity {
 		return MASK_PLAYER_BULLET;
 	}
 
-	public static void updateEntities() {
+	public static void updateEntities(float delta) {
 		elapsedTicks++;
+		elapsedSeconds += delta;
+
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).update();
 		}
@@ -150,8 +153,8 @@ public abstract class Entity {
 
 	void wrap() {
 		float buffer = 0.25f;
-		float w = TestScreen.worldWidth / 2 + buffer;
-		float h = TestScreen.worldHeight / 2 + buffer;
+		float w = MainScreen.worldWidth / 2 + buffer;
+		float h = MainScreen.worldHeight / 2 + buffer;
 
 		Vector2 pos = body.getPosition();
 		if (pos.x < -w)
@@ -173,9 +176,9 @@ public abstract class Entity {
 	}
 
 	public static Vector2 randomPosition() {
-		float w = TestScreen.worldWidth;
-		float h = TestScreen.worldHeight;
-		return new Vector2(TestScreen.rand.nextFloat() * w - w / 2, TestScreen.rand.nextFloat() * h - h / 2);
+		float w = MainScreen.worldWidth;
+		float h = MainScreen.worldHeight;
+		return new Vector2(MainScreen.rand.nextFloat() * w - w / 2, MainScreen.rand.nextFloat() * h - h / 2);
 	}
 
 	void delete() {

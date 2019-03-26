@@ -14,12 +14,13 @@ import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.*;
 import game.asteroids.input.Input;
+import game.asteroids.utility.Timer;
 
 import java.util.Random;
 
 import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
 
-public class TestScreen implements Screen {
+public class MainScreen implements Screen {
 
 	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
 	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
@@ -35,9 +36,9 @@ public class TestScreen implements Screen {
 	private Box2DDebugRenderer debug;
 
 	private final Asteroids game;
-	private final AsteroidsCollisionListener collisionListener = new AsteroidsCollisionListener();
+	private final CollisionHandler collisionListener = new CollisionHandler();
 
-	public TestScreen(Asteroids game) {
+	public MainScreen(Asteroids game) {
 		this.game = game;
 	}
 
@@ -93,7 +94,9 @@ public class TestScreen implements Screen {
 		batch.end();
 
 		Input.update();
-		Entity.updateEntities();
+		Timer.updateTimers(delta);
+
+		Entity.updateEntities(delta);
 	}
 
 	@Override

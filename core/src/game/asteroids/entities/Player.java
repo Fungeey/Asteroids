@@ -8,17 +8,21 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
+import game.asteroids.utility.Timer;
 
 /**
  * Player Entity, controllable by the player.
  * It has 3 abilities: shooting bullets, thrusting, and teleportation
  */
 public class Player extends Entity {
-	private final float turnSpeed = 20f;
-	private final float speed = 15f;
-	private final float maxSpeed = 20f;
+	private static final float turnSpeed = 20f;
+	private static final float speed = 15f;
+	private static final float maxSpeed = 20f;
+	private static final float bulletVelocity = 20f;
+	private static final float shootCooldown = 0.1f;
 
-	private final float shootSpeed = 200f;
+	private Timer coolDownTimer;
+	private boolean canShoot;
 
 	private Sprite shipBurn;
 
@@ -65,14 +69,27 @@ public class Player extends Entity {
 		else if (Input.keyDown(Input.RIGHT)) body.applyTorque(-turnSpeed, true);
 
 		//Shooting
-		if (Input.keyPressed(Input.SPACE))
-			new Bullet(Bullet.BulletType.PLAYER, direction.nor().scl(shootSpeed), body.getPosition());
+		if (canShoot) {
+			if(Input.keyPressed(Input.SPACE)) {
+				new Bullet(Bullet.BulletType.PLAYER, direction.nor().scl(bulletVelocity), body.getPosition());
+				canShoot = false;
+			}
+		}else{
+			if(coolDownTimer == null)
+				coolDownTimer = Timer.startNew(shootCooldown, this::resetCoolDownTimer);
+
+		}
 
 		// Hyperjump
 		if (Input.keyPressed(Input.LSHIFT))
 			setPosition(randomPosition());
 
 		wrap();
+	}
+
+	private void resetCoolDownTimer(){
+		canShoot = true;
+		coolDownTimer = null;
 	}
 
 	@Override
@@ -89,5 +106,11 @@ public class Player extends Entity {
 		}else{
 			return sprite;
 		}
+	}
+
+	@Override
+	void delete(){
+		super.delete();
+		coolDownTimer.clear();
 	}
 }
