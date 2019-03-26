@@ -18,7 +18,7 @@ public class Player extends Entity {
 	private static final float turnSpeed = 20f;
 	private static final float speed = 15f;
 	private static final float maxSpeed = 20f;
-	private static final float bulletVelocity = 20f;
+	private static final float bulletVelocity = 200f;
 	private static final float shootCooldown = 0.1f;
 
 	private Timer coolDownTimer;
