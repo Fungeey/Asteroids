@@ -3,6 +3,7 @@ package game.asteroids.entities;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import game.asteroids.PhysicsEngine;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
@@ -17,16 +18,16 @@ public class Bullet extends Entity{
 
 	private BulletType type;
 
-	Bullet(BulletType type, Vector2 velocity){
-		this(type, velocity, new Vector2(0, 0));
+	Bullet(PhysicsEngine engine, BulletType type, Vector2 velocity) {
+		this(engine, type, velocity, new Vector2(0, 0));
 	}
 
-	Bullet(BulletType type, Vector2 velocity, Vector2 position){
-		super(true);
+	Bullet(PhysicsEngine engine, BulletType type, Vector2 velocity, Vector2 position) {
+		super(engine, true);
 		this.type = type;
 		setPosition(position);
 
-		initialize(getSprite(), getShape(), LAYER_PLAYER_BULLET);
+		initialize(getSprite(), getShape(), CollisionHandler.LAYER_PLAYER_BULLET);
 		body.setAngularDamping(Float.MAX_VALUE);
 		body.applyForceToCenter(velocity, true);
 

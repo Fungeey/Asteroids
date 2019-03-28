@@ -8,77 +8,45 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import game.asteroids.BodyEditorLoader;
+import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
-
-import java.util.ArrayList;
 
 /**
  * Generic game entity with physics capabilities and a sprite to draw.
  */
 public abstract class Entity {
-	private static final ArrayList<Entity> entities = new ArrayList<Entity>();
-
-	//<editor-fold desc="LAYER MASK SETUP">
-	static final short LAYER_DEFAULT = 0x0001;
-	static final short LAYER_ASTEROIDS = 0x002;
-	static final short LAYER_PLAYER = 0x0004;
-	static final short LAYER_PLAYER_BULLET = 0x0008;
-
-	private static final short MASK_DEFAULT = -1; // Collide with everything
-	private static final short MASK_ASTEROIDS = LAYER_PLAYER | LAYER_PLAYER_BULLET;
-	private static final short MASK_PLAYER = LAYER_ASTEROIDS;
-	private static final short MASK_PLAYER_BULLET = LAYER_ASTEROIDS;
-	//</editor-fold>
-
-	private static World world;
 	private static BodyEditorLoader loader;
-	protected static AssetManager assets;
-	private static ArrayList<Entity> toDelete = new ArrayList<Entity>();
-	protected Sprite sprite;
-
-	protected static long elapsedTicks = 0;
-	protected static float elapsedSeconds = 0;
-
+	static AssetManager assets;
+	public Body body;
+	PhysicsEngine engine;
+	Sprite sprite;
+	private String spriteID;
 	short layer;
-	Body body;
-	String spriteID;
 
-	public static void initialize(World _world, BodyEditorLoader _loader, AssetManager _assets) {
-		world = _world;
+	Entity(PhysicsEngine engine) {
+		this(engine, false);
+	}
+
+	Entity(PhysicsEngine engine, boolean fixedRotation) {
+		this.engine = engine;
+		engine.addEntity(this);
+
+		BodyDef def = new BodyDef();
+		def.type = BodyDef.BodyType.DynamicBody;
+		def.fixedRotation = fixedRotation;
+		this.body = engine.world.createBody(def);
+		this.body.setUserData(this);
+
+	}
+
+	public static void initialize(BodyEditorLoader _loader, AssetManager _assets) {
 		loader = _loader;
 		assets = _assets;
 	}
 
-	Entity() {
-		BodyDef def = new BodyDef();
-		def.type = BodyDef.BodyType.DynamicBody;
-		this.body = world.createBody(def);
-		this.body.setUserData(this);
-
-		entities.add(this);
-	}
-
-	Entity(boolean fixedRotation) {
-		BodyDef def = new BodyDef();
-		def.type = BodyDef.BodyType.DynamicBody;
-		def.fixedRotation = fixedRotation;
-		this.body = world.createBody(def);
-		this.body.setUserData(this);
-
-		entities.add(this);
-	}
-
-	void initialize(String sprite) {
-		_initialize(sprite, new CircleShape(), LAYER_DEFAULT, true);
-	}
-
 	void initialize(String sprite, short layer) {
 		_initialize(sprite, new CircleShape(), layer, true);
-	}
-
-	void initialize(String sprite, Shape shape) {
-		_initialize(sprite, shape, LAYER_DEFAULT, false);
 	}
 
 	void initialize(String sprite, Shape shape, short layer) {
@@ -86,7 +54,7 @@ public abstract class Entity {
 	}
 
 	private FixtureDef getDefaultFixture() {
-		return getDefaultFixture(LAYER_DEFAULT);
+		return getDefaultFixture(CollisionHandler.LAYER_DEFAULT);
 	}
 
 	private FixtureDef getDefaultFixture(short layer) {
@@ -119,29 +87,13 @@ public abstract class Entity {
 	}
 
 	private short getMask(short layer) {
-		if (layer == LAYER_DEFAULT)
-			return MASK_DEFAULT;
-		if (layer == LAYER_ASTEROIDS)
-			return MASK_ASTEROIDS;
-		if (layer == LAYER_PLAYER)
-			return MASK_PLAYER;
-		return MASK_PLAYER_BULLET;
-	}
-
-	public static void updateEntities(float delta) {
-		elapsedTicks++;
-		elapsedSeconds += delta;
-
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update();
-		}
-		deleteEntities();
-	}
-
-	public static void drawEntities(SpriteBatch batch, AssetManager manager) {
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).draw(batch, manager);
-		}
+		if (layer == CollisionHandler.LAYER_DEFAULT)
+			return CollisionHandler.MASK_DEFAULT;
+		if (layer == CollisionHandler.LAYER_ASTEROIDS)
+			return CollisionHandler.MASK_ASTEROIDS;
+		if (layer == CollisionHandler.LAYER_PLAYER)
+			return CollisionHandler.MASK_PLAYER;
+		return CollisionHandler.MASK_PLAYER_BULLET;
 	}
 
 	public abstract void update();
@@ -182,20 +134,7 @@ public abstract class Entity {
 	}
 
 	void delete() {
-		if(!toDelete.contains(this))
-			toDelete.add(this);
+		engine.deleteEntity(this);
 	}
 
-	private static void deleteEntities(){
-		for(int i = toDelete.size()-1; i >= 0; i--){
-			Entity e = toDelete.get(i);
-
-			if (e instanceof Destructable)
-				((Destructable) e).onDestroy();
-
-			e.body.getWorld().destroyBody(e.body);
-			entities.remove(e);
-			toDelete.remove(e);
-		}
-	}
 }

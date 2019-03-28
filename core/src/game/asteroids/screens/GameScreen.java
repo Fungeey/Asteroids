@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
@@ -32,8 +31,6 @@ public class GameScreen implements Screen {
 	private OrthographicCamera GUICamera;
 
 	private PhysicsEngine engine;
-	private World world;
-	private Box2DDebugRenderer debug;
 
 	private final Asteroids game;
 	private final CollisionHandler collisionListener = new CollisionHandler();
@@ -44,15 +41,13 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
-		world = new World(Vector2.Zero, true);
+		World world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
 
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
 		loadTextures();
 
 		engine = new PhysicsEngine(world);
-		debug = new Box2DDebugRenderer();
-		debug.setDrawVelocities(true);
 
 		camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
 		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
@@ -65,28 +60,28 @@ public class GameScreen implements Screen {
 
 		Random rand = new Random();
 
-		Entity.initialize(world, bodyLoader, game.manager);
+		Entity.initialize(bodyLoader, game.manager);
 
 		for (int i = 0; i < 10; i++) {
-			new Asteroid(Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
-			new Asteroid(Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
-			new Asteroid(Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
+			new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
+			new Asteroid(engine, Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
+			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
 		}
 
-		new Player();
+		new Player(engine);
 	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		//debug.render(world, camera.combined);
+
 		engine.doPhysicsStep(delta);
 
 		batch.begin();
 		{
 			batch.setProjectionMatrix(camera.combined);
-			Entity.drawEntities(batch, game.manager);
+			engine.drawEntities(batch, game.manager);
 
 			batch.setProjectionMatrix(GUICamera.combined);
 			GUI.draw(batch);
@@ -96,7 +91,7 @@ public class GameScreen implements Screen {
 		Input.update();
 		Timer.updateTimers(delta);
 
-		Entity.updateEntities(delta);
+		engine.updateEntities(delta);
 	}
 
 	@Override

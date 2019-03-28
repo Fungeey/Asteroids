@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import game.asteroids.PhysicsEngine;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
@@ -18,7 +19,7 @@ public class Player extends Entity {
 	private static final float turnSpeed = 20f;
 	private static final float speed = 15f;
 	private static final float maxSpeed = 20f;
-	private static final float bulletVelocity = 200f;
+	private static final float bulletVelocity = 1000f;
 	private static final float shootCooldown = 0.1f;
 
 	private Timer coolDownTimer;
@@ -31,18 +32,13 @@ public class Player extends Entity {
 
 	private Vector2 direction;
 
-	public Player() {
-		initialize(Sprites.PLAYER_SPRITE, Entity.LAYER_PLAYER);
-
-		shipBurn = new Sprite(assets.get(Sprites.PLAYER_BURN, Texture.class));
-		shipBurn.setOriginCenter();
-
-		direction = new Vector2(0, 1);
-		body.setLinearDamping(0.5f);
+	public Player(PhysicsEngine engine) {
+		this(engine, Vector2.Zero);
 	}
 
-	public Player(Vector2 position) {
-		initialize(Sprites.PLAYER_SPRITE, Entity.LAYER_PLAYER);
+	public Player(PhysicsEngine engine, Vector2 position) {
+		super(engine);
+		initialize(Sprites.PLAYER_SPRITE, CollisionHandler.LAYER_PLAYER);
 
 		shipBurn = new Sprite(assets.get(Sprites.PLAYER_BURN, Texture.class));
 		shipBurn.setOriginCenter();
@@ -71,7 +67,7 @@ public class Player extends Entity {
 		//Shooting
 		if (canShoot) {
 			if(Input.keyPressed(Input.SPACE)) {
-				new Bullet(Bullet.BulletType.PLAYER, direction.nor().scl(bulletVelocity), body.getPosition());
+				engine.addEntity(new Bullet(engine, Bullet.BulletType.PLAYER, direction.nor().scl(bulletVelocity), body.getPosition()));
 				canShoot = false;
 			}
 		}else{
@@ -100,7 +96,7 @@ public class Player extends Entity {
 
 	private Sprite getSprite(){
 		if(Input.keyDown(Input.UP)){
-			if(elapsedTicks % 3 == 0)
+			if (engine.elapsedTicks % 3 == 0)
 				return shipBurn;
 			return sprite;
 		}else{

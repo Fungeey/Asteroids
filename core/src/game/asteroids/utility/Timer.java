@@ -3,7 +3,7 @@ package game.asteroids.utility;
 import java.util.ArrayList;
 
 public class Timer {
-	private static final ArrayList<Timer> timers = new ArrayList<Timer>();
+	private static final ArrayList<Timer> timers = new ArrayList<>();
 
 	private float duration;
 	private Runnable callBack;

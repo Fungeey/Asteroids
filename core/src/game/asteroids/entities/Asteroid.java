@@ -2,6 +2,7 @@ package game.asteroids.entities;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 
@@ -13,17 +14,15 @@ public class Asteroid extends Entity implements Destructable {
 
 	private AsteroidSize size;
 
-	public Asteroid(AsteroidSize size) {
-		this.size = size;
-
-		initialize(getSprite(), LAYER_ASTEROIDS);
-		applyRandomVelocity();
+	public Asteroid(PhysicsEngine engine, AsteroidSize size) {
+		this(engine, size, Vector2.Zero);
 	}
 
-	public Asteroid(AsteroidSize size, Vector2 position) {
+	public Asteroid(PhysicsEngine engine, AsteroidSize size, Vector2 position) {
+		super(engine);
 		this.size = size;
 
-		initialize(getSprite(), LAYER_ASTEROIDS);
+		initialize(getSprite(), CollisionHandler.LAYER_ASTEROIDS);
 		body.setTransform(position, body.getAngle());
 		applyRandomVelocity();
 	}
@@ -72,11 +71,11 @@ public class Asteroid extends Entity implements Destructable {
 	@Override
 	public void onDestroy() {
 		if(size == AsteroidSize.LARGE){
-			new Asteroid(AsteroidSize.MEDIUM, body.getPosition());
-			new Asteroid(AsteroidSize.MEDIUM, body.getPosition());
+			new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
+			new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
 		}else if(size == AsteroidSize.MEDIUM){
-			new Asteroid(AsteroidSize.SMALL, body.getPosition());
-			new Asteroid(AsteroidSize.SMALL, body.getPosition());
+			new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
+			new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
 		}
 	}
 }
