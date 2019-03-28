@@ -78,6 +78,11 @@ public class GameScreen implements Screen {
 
 		engine.doPhysicsStep(delta);
 
+		Input.update();
+		Timer.updateTimers(delta);
+
+		engine.updateEntities(delta);
+
 		batch.begin();
 		{
 			batch.setProjectionMatrix(camera.combined);
@@ -87,11 +92,6 @@ public class GameScreen implements Screen {
 			GUI.draw(batch);
 		}
 		batch.end();
-
-		Input.update();
-		Timer.updateTimers(delta);
-
-		engine.updateEntities(delta);
 	}
 
 	@Override

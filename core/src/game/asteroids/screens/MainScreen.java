@@ -44,7 +44,6 @@ public class MainScreen implements Screen {
 		if (Input.keyPressed(Input.LCTRL)) {
 			game.setScreen(new GameScreen(game));
 		}
-
 	}
 
 	@Override

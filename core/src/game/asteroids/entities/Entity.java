@@ -37,7 +37,6 @@ public abstract class Entity {
 		def.fixedRotation = fixedRotation;
 		this.body = engine.world.createBody(def);
 		this.body.setUserData(this);
-
 	}
 
 	public static void initialize(BodyEditorLoader _loader, AssetManager _assets) {
@@ -136,5 +135,4 @@ public abstract class Entity {
 	void delete() {
 		engine.deleteEntity(this);
 	}
-
 }

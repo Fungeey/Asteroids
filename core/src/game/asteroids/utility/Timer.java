@@ -32,7 +32,6 @@ public class Timer {
 	}
 
 	public static void updateTimers(float delta){
-		System.out.println(timers.size());
 		for(int i = 0; i < timers.size(); i++){
 			timers.get(i).update(delta);
 		}

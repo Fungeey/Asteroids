@@ -67,13 +67,12 @@ public class Player extends Entity {
 		//Shooting
 		if (canShoot) {
 			if(Input.keyPressed(Input.SPACE)) {
-				engine.addEntity(new Bullet(engine, Bullet.BulletType.PLAYER, direction.nor().scl(bulletVelocity), body.getPosition()));
+				new Bullet(engine, Bullet.BulletType.PLAYER, direction.nor().scl(bulletVelocity), body.getPosition());
 				canShoot = false;
 			}
 		}else{
 			if(coolDownTimer == null)
 				coolDownTimer = Timer.startNew(shootCooldown, this::resetCoolDownTimer);
-
 		}
 
 		// Hyperjump
