@@ -16,10 +16,10 @@ import game.asteroids.utility.Timer;
  * It has 3 abilities: shooting bullets, thrusting, and teleportation
  */
 public class Player extends Entity {
-	private static final float turnSpeed = 20f;
-	private static final float speed = 15f;
-	private static final float maxSpeed = 20f;
-	private static final float bulletVelocity = 1000f;
+	private static final float turnSpeed = 15f;
+	private static final float speed = 20f;
+	private static final float maxSpeed = 15f;
+	private static final float bulletVelocity = 20f;
 	private static final float shootCooldown = 0.1f;
 
 	private Timer coolDownTimer;
@@ -67,7 +67,8 @@ public class Player extends Entity {
 		//Shooting
 		if (canShoot) {
 			if(Input.keyPressed(Input.SPACE)) {
-				new Bullet(engine, Bullet.BulletType.PLAYER, direction.nor().scl(bulletVelocity), body.getPosition());
+				Vector2 vel = new Vector2(direction).nor();
+				new Bullet(engine, Bullet.BulletType.PLAYER, vel.scl(bulletVelocity), body.getPosition());
 				canShoot = false;
 			}
 		}else{
