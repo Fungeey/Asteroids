@@ -4,13 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
+import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.CollisionHandler;
+import game.asteroids.entities.Entity;
+import game.asteroids.entities.Player;
 import game.asteroids.input.Input;
+import game.asteroids.utility.Timer;
 
 public class MainScreen implements Screen {
 	private final Asteroids game;
@@ -28,8 +33,17 @@ public class MainScreen implements Screen {
 	public void show() {
 		world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
+		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
 		engine = new PhysicsEngine(world);
 
+		camera = new OrthographicCamera();
+		batch = new SpriteBatch();
+		batch.setTransformMatrix(camera.combined);
+
+		loadTextures();
+		Entity.initialize(bodyLoader, game.manager);
+
+		new Player(engine);
 	}
 
 	@Override
@@ -38,12 +52,21 @@ public class MainScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.doPhysicsStep(delta);
-
 		Input.update();
+		Timer.updateTimers(delta);
+		engine.updateEntities(delta);
+
+		batch.begin();
+		{
+			engine.drawEntities(batch, game.manager);
+		}
+		batch.end();
+
 
 		if (Input.keyPressed(Input.LCTRL)) {
 			game.setScreen(new GameScreen(game));
 		}
+
 	}
 
 	@Override
@@ -69,5 +92,11 @@ public class MainScreen implements Screen {
 	@Override
 	public void dispose() {
 
+	}
+
+	private void loadTextures() {
+		game.manager.load("ship.png", Texture.class);
+		game.manager.load("ship_burn.png", Texture.class);
+		game.manager.finishLoading();
 	}
 }

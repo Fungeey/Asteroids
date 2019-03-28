@@ -77,10 +77,8 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.doPhysicsStep(delta);
-
 		Input.update();
 		Timer.updateTimers(delta);
-
 		engine.updateEntities(delta);
 
 		batch.begin();

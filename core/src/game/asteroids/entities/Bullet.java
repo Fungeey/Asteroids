@@ -18,10 +18,6 @@ public class Bullet extends Entity{
 
 	private BulletType type;
 
-	Bullet(PhysicsEngine engine, BulletType type, Vector2 velocity) {
-		this(engine, type, velocity, new Vector2(0, 0));
-	}
-
 	Bullet(PhysicsEngine engine, BulletType type, Vector2 velocity, Vector2 position) {
 		super(engine, true);
 		this.type = type;
