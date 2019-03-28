@@ -2,7 +2,11 @@ package game.asteroids.input;
 
 import com.badlogic.gdx.Gdx;
 
+/**
+ * Records the status of any given key.
+ */
 class Key {
+
 	private int id;
 	private KeyStatus status;
 
@@ -11,6 +15,9 @@ class Key {
 		status = KeyStatus.up;
 	}
 
+	/**
+	 * Should be run every frame to update the status based on the value from the last update.
+	 */
 	void updateStatus(){
 		boolean pressed = Gdx.input.isKeyPressed(id);
 
@@ -29,5 +36,12 @@ class Key {
 
 	KeyStatus getStatus(){
 		return this.status;
+	}
+
+	public enum KeyStatus {
+		pressed,
+		released,
+		down,
+		up
 	}
 }

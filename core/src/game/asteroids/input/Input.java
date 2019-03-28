@@ -1,5 +1,9 @@
 package game.asteroids.input;
 
+/**
+ * Utility wrapper class that makes input management much easier and more terse.
+ * Also allows for edge detection on input, provided it is updated every frame.
+ */
 public class Input {
 
 	//<editor-fold desc="KEY SETUP">
@@ -21,18 +25,38 @@ public class Input {
 	private static final Key[] keys = new Key[]{LEFT, RIGHT, UP, DOWN, SPACE, ESCAPE, LSHIFT, LCTRL, W, A, S, D};
 	//</editor-fold>
 
+	/**
+	 * Updates the state of all of the Keys for edge detection.
+	 */
 	public static void update(){
 		for (Key key : keys)
 			key.updateStatus();
 	}
 
-	public static boolean keyDown(Key key){
-		return key.getStatus() == KeyStatus.down;
+	/**
+	 * Returns true if the key is being held down on the keyboard.
+	 * @param key Key to query
+	 * @return returns true if the key is currently held down, false otherwise
+	 */
+	public static boolean keyDown(Key key) {
+		return key.getStatus() == Key.KeyStatus.down;
 	}
-	public static boolean keyPressed(Key key){
-		return key.getStatus() == KeyStatus.pressed;
+
+	/**
+	 * Returns true if the key has just been pressed, as in it was not pressed last frame, but pressed now.
+	 * @param key Key to query
+	 * @return returns true if the key is been pressed, false otherwise
+	 */
+	public static boolean keyPressed(Key key) {
+		return key.getStatus() == Key.KeyStatus.pressed;
 	}
-	public static boolean keyReleased(Key key){
-		return key.getStatus() == KeyStatus.released;
+
+	/**
+	 * Returns true if the key has just been released, as in it was pressed last frame, but not pressed now.
+	 * @param key Key to query
+	 * @return returns true if the key is been released, false otherwise
+	 */
+	public static boolean keyReleased(Key key) {
+		return key.getStatus() == Key.KeyStatus.released;
 	}
 }
