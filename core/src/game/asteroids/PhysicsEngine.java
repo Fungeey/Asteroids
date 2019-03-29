@@ -1,5 +1,6 @@
 package game.asteroids;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 public class PhysicsEngine {
 	private static final float timestep = 1 / 60f;
 	public final World world;
+	public final Game game;
 	private final ArrayList<Entity> entities = new ArrayList<>();
 	private final ArrayList<Entity> toDelete = new ArrayList<>();
 	public long elapsedTicks = 0;
@@ -20,8 +22,9 @@ public class PhysicsEngine {
 	public int numAsteroids = 0;
 	public boolean saucerPresent = false;
 
-	public PhysicsEngine(World world) {
+	public PhysicsEngine(World world, Game game) {
 		this.world = world;
+		this.game = game;
 	}
 
 	public void doPhysicsStep(float deltaTime) {

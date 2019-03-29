@@ -46,7 +46,7 @@ public class MainScreen implements Screen {
         World world = new World(Vector2.Zero, true);
         world.setContactListener(collisionListener);
         BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
-        engine = new PhysicsEngine(world);
+		engine = new PhysicsEngine(world, game);
 
         camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
 

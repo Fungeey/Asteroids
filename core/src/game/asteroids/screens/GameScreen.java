@@ -38,6 +38,8 @@ public class GameScreen implements Screen {
 	private Timer saucerSpawner;
 	private Timer respawnAsteroids;
 
+	private Player player;
+
 	private PhysicsEngine engine;
 
 	private final Asteroids game;
@@ -57,7 +59,7 @@ public class GameScreen implements Screen {
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
 		loadTextures();
 
-		engine = new PhysicsEngine(world);
+		engine = new PhysicsEngine(world, game);
 
 		camera = new OrthographicCamera(worldWidth, worldHeight);
 		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
@@ -70,18 +72,18 @@ public class GameScreen implements Screen {
 
 		Entity.initialize(bodyLoader, game.manager);
 
+		//TODO: Decrease saucer time when less asteroids
+		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
+
+		new Saucer(engine, Saucer.SaucerSize.LARGE);
+		Saucer.player = player = new Player(engine);
+
 		spawnAsteroids();
 
 		stars = new ArrayList<>();
 		for (int i = 0; i < 200; i++) {
 			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
 		}
-
-		//TODO: Decrease saucer time when less asteroids
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
-
-		new Saucer(engine, Saucer.SaucerSize.LARGE);
-		Saucer.player = new Player(engine);
 	}
 
 	@Override
@@ -94,8 +96,8 @@ public class GameScreen implements Screen {
 		Timer.updateTimers(delta);
 		engine.updateEntities(delta);
 
-		if(engine.numAsteroids <= 0)
-			Timer.startNew(2f, this::spawnAsteroids);
+		if(engine.numAsteroids <= 0 && (respawnAsteroids == null || !respawnAsteroids.isRunning()))
+			respawnAsteroids = Timer.startNew(2f, this::spawnAsteroids);
 
 		if(Input.keyPressed(Input.ESCAPE))
 			new Saucer(engine);
@@ -128,8 +130,14 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnAsteroids(){
-		for (int i = 0; i < 4; i++)
-			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
+		for (int i = 0; i < 4; i++) {
+			Vector2 position = Entity.randomPosition();
+			Vector2 target = player.body.getPosition();
+			if(target.sub(position).len() < 3){
+				position.sub(target.sub(position).nor().scl(5));
+			}
+			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, position);
+		}
 	}
 
 	private void spawnSaucer(){

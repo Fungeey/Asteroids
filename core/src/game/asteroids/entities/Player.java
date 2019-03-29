@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.input.Input;
+import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
@@ -26,6 +27,7 @@ public class Player extends Entity {
 
 	private ArrayList<Runnable> doNextFrame = new ArrayList<>();
 	private final Runnable loseLife = () -> lives--;
+
 
 
 	private Timer coolDownTimer;
@@ -53,6 +55,8 @@ public class Player extends Entity {
 		direction = new Vector2(0, 1);
 		body.setTransform(position, body.getAngle());
 		body.setLinearDamping(0.3f);
+
+		respawnTimer = null;
 	}
 
 	@Override
@@ -106,7 +110,7 @@ public class Player extends Entity {
 
 	@Override
 	public void draw(SpriteBatch batch, AssetManager manager) {
-		if(!body.isActive())
+		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0)
 			return;
 
 		Vector2 pos = body.getPosition();
@@ -131,6 +135,9 @@ public class Player extends Entity {
 	}
 
 	void loseLife(){
+		if(!(engine.game.getScreen() instanceof GameScreen))
+			return;
+
 		if(!doNextFrame.contains(loseLife)) {
 			doNextFrame.add(loseLife);
 
@@ -138,6 +145,9 @@ public class Player extends Entity {
 				body.setTransform(new Vector2(0, 0), 0f);
 				body.setLinearVelocity(new Vector2(0, 0));
 			});
+
+			CollisionHandler.playerInvincible = true;
+			respawnTimer = Timer.startNew(2f, () -> CollisionHandler.playerInvincible = false);
 		}
 	}
 

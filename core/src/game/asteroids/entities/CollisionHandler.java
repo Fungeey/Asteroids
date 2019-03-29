@@ -25,6 +25,8 @@ public class CollisionHandler implements ContactListener {
 	private static final short MASK_SAUCER_BULLET = (LAYER_ASTEROIDS | LAYER_PLAYER);
 	//</editor-fold>
 
+	public static boolean playerInvincible;
+
 	static short getMask(short layer) {
 		if (layer == LAYER_DEFAULT) return MASK_DEFAULT;
 		if (layer == LAYER_ASTEROIDS) return MASK_ASTEROIDS;
@@ -39,6 +41,9 @@ public class CollisionHandler implements ContactListener {
 		Entity b = (Entity) contact.getFixtureB().getBody().getUserData();
 		
 		int combined = a.layer | b.layer;
+
+		if((combined & LAYER_PLAYER) != 0 && playerInvincible)
+			return;
 		
 		if (combined == (LAYER_ASTEROIDS | LAYER_PLAYER)) {
 			if (a.layer == LAYER_ASTEROIDS) {

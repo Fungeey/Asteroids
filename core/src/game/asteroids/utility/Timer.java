@@ -24,6 +24,10 @@ public class Timer {
 		return duration/startDuration;
 	}
 
+	public boolean isRunning(){
+		return timers.contains(this);
+	}
+
 	private Timer(float duration, Runnable callBack){
 		this.duration = duration;
 		this.callBack = callBack;
