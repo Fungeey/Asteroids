@@ -73,12 +73,12 @@ public class Asteroid extends Entity implements Destructable {
 		if(size == AsteroidSize.LARGE){
 			for (int i = 0; i < 2; i++) {
 				Asteroid a = new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
-				a.body.setLinearVelocity(body.getLinearVelocity());
+				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.25f));
 			}
 		}else if(size == AsteroidSize.MEDIUM){
 			for (int i = 0; i < 2; i++) {
 				Asteroid a = new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
-				a.body.setLinearVelocity(body.getLinearVelocity());
+				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.25f));
 			}
 		}
 		engine.numAsteroids--;

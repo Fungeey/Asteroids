@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
@@ -22,8 +23,8 @@ import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
 
 public class GameScreen implements Screen {
 
-	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
-	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
+	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER / 2.5f;
+	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER  / 2.5f;
 	public static final float buffer = 0.25f;
 
 	public static final Random rand = new Random();
@@ -31,6 +32,7 @@ public class GameScreen implements Screen {
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private OrthographicCamera GUICamera;
+	private Viewport viewport;
 
 	private Timer saucerSpawner;
 	private Timer respawnAsteroids;
@@ -46,6 +48,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
+		Gdx.graphics.setResizable(false);
 		World world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
 
@@ -54,7 +57,7 @@ public class GameScreen implements Screen {
 
 		engine = new PhysicsEngine(world);
 
-		camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
+		camera = new OrthographicCamera(worldWidth, worldHeight);
 		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
 
 		float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
