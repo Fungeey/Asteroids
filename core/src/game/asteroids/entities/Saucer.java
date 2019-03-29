@@ -14,7 +14,7 @@ import game.asteroids.utility.Timer;
 public class Saucer extends Entity implements Destructable{
 	private static final float startVelocity = 300f;
 	private static final float shootCoolDown = 1f;
-	public static float accuracy = 0;
+	public static float accuracy = 120;
 	private static final float bulletVelocity = 20f;
 
 	public static Player player;
