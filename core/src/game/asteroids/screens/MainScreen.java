@@ -15,6 +15,7 @@ import game.asteroids.entities.CollisionHandler;
 import game.asteroids.entities.Entity;
 import game.asteroids.entities.Player;
 import game.asteroids.input.Input;
+import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
 import static game.asteroids.screens.GameScreen.worldHeight;
@@ -99,9 +100,9 @@ public class MainScreen implements Screen {
 	}
 
 	private void loadTextures() {
-		game.manager.load("ship.png", Texture.class);
-		game.manager.load("ship_burn.png", Texture.class);
-		game.manager.load("bullet_player.png", Texture.class);
+		game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
+		game.manager.load(Sprites.PLAYER_BURN, Texture.class);
+		game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
 		game.manager.finishLoading();
 	}
 }

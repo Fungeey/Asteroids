@@ -13,6 +13,7 @@ import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.*;
 import game.asteroids.input.Input;
+import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
 import java.util.Random;
@@ -118,13 +119,13 @@ public class GameScreen implements Screen {
 	}
 
 	private void loadTextures() {
-		game.manager.load("asteroid_small.png", Texture.class);
-		game.manager.load("asteroid_medium.png", Texture.class);
-		game.manager.load("asteroid_large.png", Texture.class);
-		game.manager.load("bullet_player.png", Texture.class);
-		game.manager.load("bullet_saucer.png", Texture.class);
-		game.manager.load("ship.png", Texture.class);
-		game.manager.load("ship_burn.png", Texture.class);
+		game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);
+		game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
+		game.manager.load(Sprites.ASTEROID_LARGE, Texture.class);
+		game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
+		game.manager.load(Sprites.BULLET_SAUCER, Texture.class);
+		game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
+		game.manager.load(Sprites.PLAYER_BURN, Texture.class);
 		game.manager.finishLoading();
 	}
 }

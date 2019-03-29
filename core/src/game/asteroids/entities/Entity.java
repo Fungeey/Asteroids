@@ -75,7 +75,7 @@ public abstract class Entity {
 		sprite.setOriginCenter();
 
 		if (useLoader) {
-			loader.attachFixture(body, spriteID, getDefaultFixture(layer), sprite.getWidth() / Sprites.PIXELS_PER_METER);
+			loader.attachFixture(body, spriteID.substring(spriteID.lastIndexOf('/')+1), getDefaultFixture(layer), sprite.getWidth() / Sprites.PIXELS_PER_METER);
 		} else {
 			FixtureDef fix = getDefaultFixture(layer);
 			fix.shape = shape;

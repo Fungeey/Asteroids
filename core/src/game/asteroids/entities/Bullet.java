@@ -24,7 +24,6 @@ public class Bullet extends Entity{
 		setPosition(position);
 
 		initialize(getSprite(), getShape(), CollisionHandler.LAYER_PLAYER_BULLET);
-		body.setAngularDamping(Float.MAX_VALUE);
 		body.setLinearVelocity(velocity);
 
 		lifeTimer = Timer.startNew(lifeTime, this::delete);
