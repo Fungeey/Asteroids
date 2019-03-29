@@ -12,10 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
-import game.asteroids.entities.CollisionHandler;
-import game.asteroids.entities.Entity;
-import game.asteroids.entities.Player;
-import game.asteroids.entities.SignalAsteroid;
+import game.asteroids.entities.*;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
@@ -29,6 +26,7 @@ public class HelpScreen implements Screen {
     private final CollisionHandler collisionListener = new CollisionHandler();
     private SpriteBatch batch;
     private OrthographicCamera camera;
+    private OrthographicCamera GUICamera;
     private PhysicsEngine engine;
     
     public HelpScreen (Asteroids game) {
@@ -43,7 +41,10 @@ public class HelpScreen implements Screen {
         engine = new PhysicsEngine(world);
         
         camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
-        //camera.position.set(worldWidth / 2, worldHeight / 2, 0);
+    
+    
+        float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
+        GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
         
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
@@ -52,6 +53,11 @@ public class HelpScreen implements Screen {
         Entity.initialize(bodyLoader, game.manager);
         
         new Player(engine);
+    
+        new SignalAsteroid(engine, new Vector2(6, -5), () -> {
+            dispose();
+            game.setScreen(new MainScreen(game));
+        });
     }
     
     @Override
@@ -66,22 +72,22 @@ public class HelpScreen implements Screen {
         
         batch.begin();
         {
+            batch.setProjectionMatrix(camera.combined);
             engine.drawEntities(batch, game.manager);
             for (int x = -10; x < 10; x++) {
                 for (int y = -10; y < 10; y++) {
                     batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), x, y, 0.1f, 0.1f);
                 }
             }
-            Vector3 d = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            batch.draw(game.manager.get(Sprites.ASTEROID_SMALL, Texture.class), d.x, d.y, 1, 1);
+    
+            batch.setProjectionMatrix(GUICamera.combined);
+            GUI.drawText(batch, "Menu", 360,-245, 1.5f);
+    
+            GUI.drawText(batch, "Asteroids will appear \n asdf", -320, 65, 0.6f);
         }
         batch.end();
-        
-        
-        if (Input.keyPressed(Input.LCTRL)) {
-            dispose();
-            game.setScreen(new MainScreen(game));
-        }
+    
+    
         
     }
     

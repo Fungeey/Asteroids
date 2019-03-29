@@ -1,8 +1,10 @@
 package game.asteroids;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import game.asteroids.entities.GUI;
+import game.asteroids.screens.HelpScreen;
 import game.asteroids.screens.MainScreen;
 
 /**
@@ -18,8 +20,9 @@ public class Asteroids extends Game {
 
     @Override
     public void create() {
+        Gdx.graphics.setResizable(false);
         manager = new AssetManager();
-		this.setScreen(new MainScreen(this));
+		this.setScreen(new HelpScreen(this));
     }
 
     @Override
