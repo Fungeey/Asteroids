@@ -33,7 +33,7 @@ public class Saucer extends Entity implements Destructable{
 		body.setFixedRotation(true);
 
 		float x = (GameScreen.worldWidth / 2 + GameScreen.buffer) * MathUtils.randomSign();
-		float y = MathUtils.random((GameScreen.worldWidth / 2)  * MathUtils.randomSign() * MathUtils.random(1));
+		float y = MathUtils.random((GameScreen.worldWidth / 2 - GameScreen.buffer)  * MathUtils.randomSign() * MathUtils.random(1));
 		body.setTransform(new Vector2(x, y), body.getAngle());
 		Vector2 thrust = new Vector2(-x, 0);
 		body.applyForceToCenter(thrust.nor().scl(startVelocity), true);

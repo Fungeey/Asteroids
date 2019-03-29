@@ -39,6 +39,18 @@ public abstract class Entity {
 		this.body.setUserData(this);
 	}
 
+	Entity(PhysicsEngine engine, boolean fixedRotation, BodyDef.BodyType bodyType) {
+		this.engine = engine;
+		engine.addEntity(this);
+
+		BodyDef def = new BodyDef();
+		def.type = BodyDef.BodyType.DynamicBody;
+		def.type = bodyType;
+		def.fixedRotation = fixedRotation;
+		this.body = engine.world.createBody(def);
+		this.body.setUserData(this);
+	}
+
 	public static void initialize(BodyEditorLoader _loader, AssetManager _assets) {
 		loader = _loader;
 		assets = _assets;
