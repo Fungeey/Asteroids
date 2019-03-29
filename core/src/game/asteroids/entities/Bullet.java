@@ -12,7 +12,7 @@ import game.asteroids.utility.Timer;
  */
 public class Bullet extends Entity{
 	private static final int bulletRadius = 6;
-	private static final float lifeTime = 0.5f;
+	private static final float lifeTime = 0.75f;
 
 	private Timer lifeTimer;
 

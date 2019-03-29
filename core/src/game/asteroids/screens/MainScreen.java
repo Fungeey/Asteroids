@@ -60,6 +60,11 @@ public class MainScreen implements Screen {
         Entity.initialize(bodyLoader, game.manager);
 
 
+		stars = new ArrayList<>();
+		for (int i = 0; i < 200; i++) {
+			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
+		}
+
 		new Player(engine);
 
 		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 380, 0))), () -> {
@@ -75,15 +80,11 @@ public class MainScreen implements Screen {
             Gdx.app.exit();
         });
 
-		stars = new ArrayList<>();
-		for (int i = 0; i < 200; i++) {
-			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
-		}
     }
 
 	@Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.05f, 0f, 0.05f, 1);
+        Gdx.gl.glClearColor(0.15f, 0.10f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.doPhysicsStep(delta);
@@ -117,30 +118,29 @@ public class MainScreen implements Screen {
 			}
             batch.end();
         }
-
 	}
 
 	@Override
     public void resize(int width, int height) {
-
-	}
-
-	@Override
+    
+    }
+    
+    @Override
     public void pause() {
-
-	}
-
-	@Override
+    
+    }
+    
+    @Override
     public void resume() {
-
-	}
-
-	@Override
+    
+    }
+    
+    @Override
     public void hide() {
-
-	}
-
-	@Override
+    
+    }
+    
+    @Override
     public void dispose() {
         exiting = true;
         game.manager.clear();

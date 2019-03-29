@@ -46,7 +46,7 @@ public class Player extends Entity {
 
 		direction = new Vector2(0, 1);
 		body.setTransform(position, body.getAngle());
-		body.setLinearDamping(0.5f);
+		body.setLinearDamping(0.3f);
 	}
 
 	public void update() {
@@ -60,7 +60,7 @@ public class Player extends Entity {
 		}
 
 		// Thrusting
-		direction.setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
+		direction.setAngle(body.getAngle() * MathUtils.radiansToDegrees + 90);
 
 		if (Input.keyDown(Input.UP)) {
 			Vector2 thrust = new Vector2(direction).nor().scl(speed);
