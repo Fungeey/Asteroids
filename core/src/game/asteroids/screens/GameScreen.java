@@ -86,7 +86,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.15f, 0f, 0.15f, 1);
+		Gdx.gl.glClearColor(0.15f, 0.1f, 0.15f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.doPhysicsStep(delta);
@@ -95,7 +95,10 @@ public class GameScreen implements Screen {
 		engine.updateEntities(delta);
 
 		if(engine.numAsteroids <= 0)
-			spawnAsteroids();
+			Timer.startNew(2f, this::spawnAsteroids);
+
+		if(Input.keyPressed(Input.ESCAPE))
+			new Saucer(engine);
 
 		batch.begin();
 		{

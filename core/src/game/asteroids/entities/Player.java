@@ -128,7 +128,8 @@ public class Player extends Entity {
 	void loseLife(){
 		//body.setAwake(false);
 		resetPosition = true;
-		//lives--;
+		lives--;
+		System.out.println("lives: " + lives);
 	}
 
 	Vector2 getPosition(){

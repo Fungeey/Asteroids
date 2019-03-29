@@ -45,11 +45,12 @@ public class Saucer extends Entity implements Destructable{
 			System.out.println("Saucer Offscreen");
 
 		body.setTransform(new Vector2(x, y), body.getAngle());
-		Vector2 thrust = new Vector2(-x, 0);
-		body.applyForceToCenter(thrust.nor().scl(startVelocity), true);
+		body.applyForceToCenter(new Vector2(-x, 0).nor().scl(startVelocity), true);
 
 		shootTimer = Timer.startNew(shootCoolDown, this::shoot);
 		lifeTimer = Timer.startNew(MathUtils.random(3, 5), () -> toDestroy = true);
+
+		directionTimer = Timer.startNew(MathUtils.random(1f, 3f), this::changeDirection);
 	}
 
 	private void shoot(){
@@ -66,6 +67,14 @@ public class Saucer extends Entity implements Destructable{
 		}
 	}
 
+	private void changeDirection(){
+		Vector2 vel = body.getLinearVelocity();
+		vel.y = 3f * MathUtils.randomSign() * MathUtils.random(1f);
+		body.setLinearVelocity(vel);
+
+		directionTimer = Timer.startNew(MathUtils.random(1f, 3f), this::changeDirection);
+	}
+
 	@Override
 	public void update(){
 		if(wrap() && toDestroy)
@@ -73,9 +82,17 @@ public class Saucer extends Entity implements Destructable{
 	}
 
 	private String getSprite() {
-		if (size == SaucerSize.SMALL)
-			return Sprites.SAUCER_SMALL_SPRITE_1;
-		return Sprites.SAUCER_LARGE_SPRITE_1;
+		if (size == SaucerSize.SMALL) {
+			if((engine.elapsedTicks/10) % 2 == 0)
+				return Sprites.SAUCER_SMALL_SPRITE_1;
+			else
+				return Sprites.SAUCER_SMALL_SPRITE_2;
+		}
+
+		if((engine.elapsedTicks/10) % 2 == 0)
+			return Sprites.SAUCER_LARGE_SPRITE_1;
+		else
+			return Sprites.SAUCER_LARGE_SPRITE_2;
 	}
 
 	public enum SaucerSize {
