@@ -21,6 +21,7 @@ import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import systems.CollisionHandler;
 import systems.GUI;
+import systems.Sounds;
 import systems.Timer;
 
 import java.util.ArrayList;
@@ -130,6 +131,7 @@ public class GameScreen implements Screen {
 				GUI.drawText(batch, "Press enter to continue", -200, -300, 1f);
 
 				if(Input.keyPressed(Input.ENTER)){
+					Sounds.play(Sounds.GAME_TRANSITION_1);
 					dispose();
 					game.setScreen(new MainScreen(game));
 				}
@@ -138,6 +140,7 @@ public class GameScreen implements Screen {
 		batch.end();
 		
 		if (Input.keyPressed(Input.LCTRL)) {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
 			dispose();
 			game.setScreen(new MainScreen(game));
 		}
@@ -155,6 +158,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnSaucer(){
+		Sounds.play(Sounds.SAUCER_APPEAR);
 		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
 		new Saucer(engine);
 	}

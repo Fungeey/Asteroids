@@ -11,6 +11,7 @@ import game.asteroids.input.Input;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 import systems.CollisionHandler;
+import systems.Sounds;
 import systems.Timer;
 
 import java.util.ArrayList;
@@ -75,6 +76,8 @@ public class Player extends Entity {
 		direction.setAngle(body.getAngle() * MathUtils.radiansToDegrees + 90);
 
 		if (Input.keyDown(Input.UP)) {
+			Sounds.play(Sounds.PLAYER_THRUST);
+
 			Vector2 thrust = new Vector2(direction).nor().scl(speed);
 			body.applyForceToCenter(thrust, true);
 		}
@@ -89,6 +92,8 @@ public class Player extends Entity {
 		//Shooting
 		if (canShoot) {
 			if(Input.keyPressed(Input.SPACE)) {
+				Sounds.play(Sounds.PLAYER_SHOOT);
+
 				Vector2 vel = new Vector2(direction).nor();
 				new Bullet(engine, Bullet.BulletType.PLAYER, vel.scl(bulletVelocity), body.getPosition());
 				canShoot = false;
@@ -145,6 +150,8 @@ public class Player extends Entity {
 		if(!doNextFrame.contains(loseLife)) {
 			doNextFrame.add(loseLife);
 
+			Sounds.play(Sounds.PLAYER_DEATH);
+
 			if(lives - 1 <= 0)
 				return;
 
@@ -159,6 +166,7 @@ public class Player extends Entity {
 	}
 
 	private void hyperJump(){
+		Sounds.play(Sounds.PLAYER_JUMP);
 		setActive(false);
 		Timer.startNew(0.5f, () -> {
 			setPosition(randomPosition());

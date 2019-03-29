@@ -21,6 +21,7 @@ import game.asteroids.utility.Sprites;
 import game.asteroids.utility.VectorUtils;
 import systems.CollisionHandler;
 import systems.GUI;
+import systems.Sounds;
 import systems.Timer;
 
 import java.util.ArrayList;
@@ -73,14 +74,17 @@ public class MainScreen implements Screen {
 		new Player(engine);
 
 		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 380, 0))), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
             dispose();
             game.setScreen(new GameScreen(game));
         });
         new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 510, 0))), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
             dispose();
             game.setScreen(new HelpScreen(game));
         });
         new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 640, 0))), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
             dispose();
             Gdx.app.exit();
         });

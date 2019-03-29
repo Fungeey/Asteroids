@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import game.asteroids.screens.GameScreen;
 import systems.GUI;
+import systems.Sounds;
 
 /**
  * Main class for the game.
@@ -28,6 +29,7 @@ public class Asteroids extends Game {
     public void dispose() {
         manager.dispose();
         GUI.dispose();
+        Sounds.dispose();
     }
 
 	@Override

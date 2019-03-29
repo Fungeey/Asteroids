@@ -18,6 +18,7 @@ import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import systems.CollisionHandler;
 import systems.GUI;
+import systems.Sounds;
 import systems.Timer;
 
 import static game.asteroids.screens.GameScreen.worldHeight;
@@ -56,6 +57,7 @@ public class DeathScreen implements Screen {
 		new Player(engine);
 
 		new SignalAsteroid(engine, new Vector2(6, -5), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
 			dispose();
 			game.setScreen(new MainScreen(game));
 		});
