@@ -46,7 +46,7 @@ public class Player extends Entity {
 
 		direction = new Vector2(0, 1);
 		body.setTransform(position, body.getAngle());
-		body.setLinearDamping(0.5f);
+		body.setLinearDamping(0.3f);
 	}
 
 	public void update() {
