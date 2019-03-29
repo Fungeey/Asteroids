@@ -56,6 +56,8 @@ public class Player extends Entity {
 		body.setLinearDamping(0.3f);
 
 		respawnTimer = null;
+		lives = 3;
+		setActive(true);
 	}
 
 	@Override
@@ -111,9 +113,8 @@ public class Player extends Entity {
 	public void draw(SpriteBatch batch, AssetManager manager) {
 		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0)
 			return;
-		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive)
+		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive) //
 			return;
-
 
 		Vector2 pos = body.getPosition();
 		batch.draw(getSprite(), pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
@@ -143,6 +144,9 @@ public class Player extends Entity {
 		if(!doNextFrame.contains(loseLife)) {
 			doNextFrame.add(loseLife);
 
+			if(lives - 1 <= 0)
+				return;
+
 			doNextFrame.add(() -> {
 				body.setTransform(new Vector2(0, 0), 0f);
 				body.setLinearVelocity(new Vector2(0, 0));
@@ -164,6 +168,11 @@ public class Player extends Entity {
 	private void setActive(boolean active){
 		isActive = active;
 		CollisionHandler.playerInvincible = !active;
+	}
+
+	public void gameOver(){
+		setActive(false);
+		body.setActive(false);
 	}
 
 	Vector2 getPosition(){

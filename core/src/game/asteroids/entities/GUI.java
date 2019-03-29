@@ -10,7 +10,8 @@ public class GUI {
 	private static GlyphLayout textLayout = new GlyphLayout();
 
 	public static void drawScore(SpriteBatch batch){
-		font.draw(batch, Player.score + "", -500, 300);
+		font.draw(batch, "Score: " + Player.score + "", -500, 370);
+		font.draw(batch, "Lives: " + Player.lives + "", -500, 320);
 	}
 
 	private static void drawText(SpriteBatch batch, GlyphLayout text, float x, float y){

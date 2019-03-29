@@ -41,7 +41,6 @@ public class HelpScreen implements Screen {
         
         camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
     
-    
         float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
         GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
         
@@ -76,7 +75,15 @@ public class HelpScreen implements Screen {
         Input.update();
         Timer.updateTimers(delta);
         engine.updateEntities(delta);
-        
+
+        if(engine.numAsteroids == 0){
+            Timer.startNew(2f, () -> {
+                new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 1.5f), Vector2.Zero);
+                new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 1.5f), Vector2.Zero);
+                new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 1.5f), Vector2.Zero);
+            });
+        }
+
         batch.begin();
         {
             batch.setProjectionMatrix(camera.combined);

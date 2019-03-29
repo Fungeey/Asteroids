@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -49,7 +50,7 @@ public class GameScreen implements Screen {
 		this.game = game;
 	}
 
-	ArrayList<Vector2> stars;
+	private ArrayList<Vector2> stars;
 
 	@Override
 	public void show() {
@@ -62,7 +63,7 @@ public class GameScreen implements Screen {
 		engine = new PhysicsEngine(world, game);
 
 		camera = new OrthographicCamera(worldWidth, worldHeight);
-		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
+		//camera.position.set(worldWidth / 2, worldHeight / 2, 0);
 
 		float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
 		GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
@@ -102,17 +103,12 @@ public class GameScreen implements Screen {
 		if(Input.keyPressed(Input.ESCAPE))
 			new Saucer(engine);
 
-		if(Player.lives == 0){
-			dispose();
-			game.setScreen(new DeathScreen(game));
-		}
-
 		batch.begin();
 		{
 			batch.setProjectionMatrix(camera.combined);
 
 			for (Vector2 v : stars)
-				batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), v.x, v.y, 0.1f, 0.1f);
+				batch.draw(game.manager.get(MathUtils.randomSign() == -1 ? Sprites.BULLET_PLAYER : Sprites.BULLET_SAUCER, Texture.class), v.x, v.y, 0.1f, 0.1f);
 			stars.remove(0);
 			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
 
@@ -120,6 +116,19 @@ public class GameScreen implements Screen {
 
 			batch.setProjectionMatrix(GUICamera.combined);
 			GUI.drawScore(batch);
+
+			if(Player.lives <= 0){
+				// Game Over
+				player.gameOver();
+
+				GUI.drawText(batch, "Game Over", -125, 100, 1.5f);
+				GUI.drawText(batch, "Press enter to continue", -200, -300, 1f);
+
+				if(Input.keyPressed(Input.ENTER)){
+					dispose();
+					game.setScreen(new MainScreen(game));
+				}
+			}
 		}
 		batch.end();
 		
