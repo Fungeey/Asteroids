@@ -57,15 +57,15 @@ public class MainScreen implements Screen {
         
         new Player(engine);
         
-        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(400, 190, 0))), () -> {
+        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 380, 0))), () -> {
             dispose();
             game.setScreen(new GameScreen(game));
         });
-        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(400, 255, 0))), () -> {
+        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 510, 0))), () -> {
             dispose();
             game.setScreen(new HelpScreen(game));
         });
-        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(400, 320, 0))), () -> {
+        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 640, 0))), () -> {
             dispose();
             Gdx.app.exit();
         });
