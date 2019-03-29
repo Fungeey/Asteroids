@@ -116,7 +116,7 @@ public class Saucer extends Entity implements Destructable{
 	@Override
 	public void onDestroy() {
 		shootTimer.clear();
-		//directionTimer.clear();
+		directionTimer.clear();
 		lifeTimer.clear();
 
 		engine.saucerPresent = false;

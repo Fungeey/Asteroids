@@ -11,6 +11,8 @@ import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
+import java.util.ArrayList;
+
 /**
  * Player Entity, controllable by the player.
  * It has 3 abilities: shooting bullets, thrusting, and teleportation
@@ -22,14 +24,18 @@ public class Player extends Entity {
 	private static final float bulletVelocity = 20f;
 	private static final float shootCooldown = 0.1f;
 
+	private ArrayList<Runnable> doNextFrame = new ArrayList<>();
+	private final Runnable loseLife = () -> lives--;
+
+
 	private Timer coolDownTimer;
 	private boolean canShoot;
-
 	private Sprite shipBurn;
-	private boolean resetPosition = false;
+
+	private Timer respawnTimer;
 
 	public static int lives = 3;
-	public static int score;
+	static int score;
 
 	private Vector2 direction;
 
@@ -37,7 +43,7 @@ public class Player extends Entity {
 		this(engine, Vector2.Zero);
 	}
 
-	public Player(PhysicsEngine engine, Vector2 position) {
+	Player(PhysicsEngine engine, Vector2 position) {
 		super(engine);
 		initialize(Sprites.PLAYER_SPRITE, CollisionHandler.LAYER_PLAYER);
 
@@ -49,14 +55,14 @@ public class Player extends Entity {
 		body.setLinearDamping(0.3f);
 	}
 
+	@Override
 	public void update() {
 		if(!body.isActive())
 			return;
 
-		if(resetPosition) {
-			body.setTransform(new Vector2(0, 0), 0f);
-			body.setLinearVelocity(new Vector2(0, 0));
-			resetPosition = false;
+		for(int i = 0; i < doNextFrame.size(); i++){
+			doNextFrame.get(i).run();
+			doNextFrame.remove(i);
 		}
 
 		// Thrusting
@@ -124,12 +130,15 @@ public class Player extends Entity {
 			coolDownTimer.clear();
 	}
 
-	//TODO: rename to something sensible
 	void loseLife(){
-		//body.setAwake(false);
-		resetPosition = true;
-		lives--;
-		System.out.println("lives: " + lives);
+		if(!doNextFrame.contains(loseLife)) {
+			doNextFrame.add(loseLife);
+
+			doNextFrame.add(() -> {
+				body.setTransform(new Vector2(0, 0), 0f);
+				body.setLinearVelocity(new Vector2(0, 0));
+			});
+		}
 	}
 
 	Vector2 getPosition(){

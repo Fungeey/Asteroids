@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
@@ -17,50 +16,29 @@ import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
-import java.util.ArrayList;
-import java.util.Random;
+import static game.asteroids.screens.GameScreen.worldHeight;
+import static game.asteroids.screens.GameScreen.worldWidth;
 
-import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
-
-public class GameScreen implements Screen {
-
-	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER / 2;
-	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER / 2;
-	public static final float buffer = 0.25f;
-
-	public static final Random rand = new Random();
-
+public class DeathScreen implements Screen {
+	private final Asteroids game;
+	private final CollisionHandler collisionListener = new CollisionHandler();
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private OrthographicCamera GUICamera;
-	private Viewport viewport;
-
-	private Timer saucerSpawner;
-	private Timer respawnAsteroids;
-
 	private PhysicsEngine engine;
 
-	private final Asteroids game;
-	private final CollisionHandler collisionListener = new CollisionHandler();
-
-	public GameScreen(Asteroids game) {
+	public DeathScreen (Asteroids game) {
 		this.game = game;
 	}
-
-	ArrayList<Vector2> stars;
 
 	@Override
 	public void show() {
 		World world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
-
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
-		loadTextures();
-
 		engine = new PhysicsEngine(world);
 
-		camera = new OrthographicCamera(worldWidth, worldHeight);
-		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
+		camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
 
 		float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
 		GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
@@ -68,25 +46,20 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
 
+		loadTextures();
 		Entity.initialize(bodyLoader, game.manager);
 
-		spawnAsteroids();
+		new Player(engine);
 
-		stars = new ArrayList<>();
-		for (int i = 0; i < 200; i++) {
-			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
-		}
-
-		//TODO: Decrease saucer time when less asteroids
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
-
-		new Saucer(engine, Saucer.SaucerSize.LARGE);
-		Saucer.player = new Player(engine);
+		new SignalAsteroid(engine, new Vector2(6, -5), () -> {
+			dispose();
+			game.setScreen(new MainScreen(game));
+		});
 	}
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.15f, 0.1f, 0.15f, 1);
+		Gdx.gl.glClearColor(0f, 0f, 0.5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.doPhysicsStep(delta);
@@ -94,47 +67,23 @@ public class GameScreen implements Screen {
 		Timer.updateTimers(delta);
 		engine.updateEntities(delta);
 
-		if(engine.numAsteroids <= 0)
-			Timer.startNew(2f, this::spawnAsteroids);
-
-		if(Input.keyPressed(Input.ESCAPE))
-			new Saucer(engine);
-
-		if(Player.lives == 0){
-			dispose();
-			game.setScreen(new DeathScreen(game));
-		}
-
 		batch.begin();
 		{
 			batch.setProjectionMatrix(camera.combined);
-
-			for (Vector2 v : stars)
-				batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), v.x, v.y, 0.1f, 0.1f);
-			stars.remove(0);
-			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
-
 			engine.drawEntities(batch, game.manager);
+			for (int x = -10; x < 10; x++) {
+				for (int y = -10; y < 10; y++) {
+					batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), x, y, 0.1f, 0.1f);
+				}
+			}
 
 			batch.setProjectionMatrix(GUICamera.combined);
-			GUI.drawScore(batch);
+			GUI.drawText(batch, "Menu", 360,-245, 1.5f);
 		}
 		batch.end();
-		
-		if (Input.keyPressed(Input.LCTRL)) {
-			dispose();
-			game.setScreen(new MainScreen(game));
-		}
-	}
 
-	private void spawnAsteroids(){
-		for (int i = 0; i < 4; i++)
-			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
-	}
 
-	private void spawnSaucer(){
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
-		new Saucer(engine);
+
 	}
 
 	@Override
@@ -159,11 +108,10 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-	    game.manager.clear();
-		Timer.clearAll();
+		game.manager.clear();
 	}
 
-	private void loadTextures() {
+	void loadTextures() {
 		game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);
 		game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
 		game.manager.load(Sprites.ASTEROID_LARGE, Texture.class);
@@ -178,7 +126,6 @@ public class GameScreen implements Screen {
 		game.manager.load(Sprites.SAUCER_LARGE_SPRITE_2, Texture.class);
 		game.manager.load(Sprites.SAUCER_SMALL_SPRITE_1, Texture.class);
 		game.manager.load(Sprites.SAUCER_SMALL_SPRITE_2, Texture.class);
-		
 		game.manager.finishLoading();
 	}
 }

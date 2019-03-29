@@ -5,17 +5,23 @@ import java.util.ArrayList;
 public class Timer {
 	private static final ArrayList<Timer> timers = new ArrayList<>();
 
+	private float startDuration;
 	private float duration;
 	private Runnable callBack;
 
 	public static Timer startNew(float duration, Runnable callBack){
 		Timer timer = new Timer(duration, callBack);
+		timer.startDuration = duration;
 		timers.add(timer);
 		return timer;
 	}
 
 	public void clear(){
 		timers.remove(this);
+	}
+
+	public float progress(){
+		return duration/startDuration;
 	}
 
 	private Timer(float duration, Runnable callBack){
