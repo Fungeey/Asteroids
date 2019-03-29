@@ -33,13 +33,17 @@ public class Saucer extends Entity implements Destructable{
 		body.setFixedRotation(true);
 
 		float x = (GameScreen.worldWidth / 2 + GameScreen.buffer) * MathUtils.randomSign();
-		float y = MathUtils.random((GameScreen.worldWidth / 2 - GameScreen.buffer)  * MathUtils.randomSign() * MathUtils.random(1));
+		float y = MathUtils.random((GameScreen.worldWidth / 2 - GameScreen.buffer)  * MathUtils.randomSign() * MathUtils.random(1f));
+
+		if(y > GameScreen.worldWidth/2)
+			System.out.println("Saucer Offscreen");
+
 		body.setTransform(new Vector2(x, y), body.getAngle());
 		Vector2 thrust = new Vector2(-x, 0);
 		body.applyForceToCenter(thrust.nor().scl(startVelocity), true);
 
 		shootTimer = Timer.startNew(shootCoolDown, this::shoot);
-		lifeTimer = Timer.startNew(MathUtils.random(3, 5), () -> player = player);
+		lifeTimer = Timer.startNew(MathUtils.random(3, 5), () -> toDestroy = true);
 	}
 
 	private void shoot(){
@@ -58,10 +62,8 @@ public class Saucer extends Entity implements Destructable{
 
 	@Override
 	public void update(){
-		if(wrap() && toDestroy) {
-			System.out.println("Saucer Self Destruct");
+		if(wrap() && toDestroy)
 			this.delete();
-		}
 	}
 
 	private String getSprite() {

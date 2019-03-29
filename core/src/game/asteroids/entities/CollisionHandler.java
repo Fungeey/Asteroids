@@ -18,10 +18,10 @@ public class CollisionHandler implements ContactListener {
 	static final short LAYER_SAUCER = 0x0010;
 	static final short LAYER_SAUCER_BULLET = 0x0020;
 
-	static final short MASK_DEFAULT = -1;
-	static final short MASK_ASTEROIDS = LAYER_PLAYER | LAYER_PLAYER_BULLET;
-	static final short MASK_PLAYER = LAYER_ASTEROIDS;
-	static final short MASK_PLAYER_BULLET = LAYER_ASTEROIDS;
+	private static final short MASK_DEFAULT = -1;
+	private static final short MASK_ASTEROIDS = LAYER_PLAYER | LAYER_PLAYER_BULLET;
+	private static final short MASK_PLAYER = LAYER_ASTEROIDS;
+	private static final short MASK_PLAYER_BULLET = (LAYER_ASTEROIDS | LAYER_SAUCER);
 	private static final short MASK_SAUCER = (LAYER_ASTEROIDS | LAYER_PLAYER | LAYER_PLAYER_BULLET);
 	private static final short MASK_SAUCER_BULLET = (LAYER_ASTEROIDS | LAYER_PLAYER);
 	//</editor-fold>
@@ -47,12 +47,13 @@ public class CollisionHandler implements ContactListener {
 				Player.score += ((Asteroid)b).getPointValue();
 				b.delete();
 			}
-		} else if ((a.layer | b.layer) == (LAYER_PLAYER_BULLET | LAYER_ASTEROIDS)) {
+		} else if ((a.layer | b.layer) == (LAYER_ASTEROIDS | LAYER_PLAYER_BULLET)) {
 			if (a.layer == LAYER_ASTEROIDS) Player.score += ((Destructable) a).getPointValue();
 			else Player.score += ((Asteroid)b).getPointValue();
 			a.delete();
 			b.delete();
 		}else if((a.layer | b.layer) == (LAYER_SAUCER | LAYER_PLAYER_BULLET)){
+			System.out.println("Shot a saucer");
 			if (a.layer == LAYER_SAUCER) Player.score += ((Destructable) a).getPointValue();
 			else Player.score += ((Destructable)b).getPointValue();
 			a.delete();
