@@ -12,7 +12,7 @@ import game.asteroids.utility.Timer;
  */
 public class Bullet extends Entity{
 	private static final int bulletRadius = 6;
-	private static final float lifeTime = 2;
+	private static final float lifeTime = 0.5f;
 
 	private Timer lifeTimer;
 
@@ -25,7 +25,7 @@ public class Bullet extends Entity{
 
 		initialize(getSprite(), getShape(), CollisionHandler.LAYER_PLAYER_BULLET);
 		body.setAngularDamping(Float.MAX_VALUE);
-		body.applyForceToCenter(velocity, true);
+		body.setLinearVelocity(velocity);
 
 		lifeTimer = Timer.startNew(lifeTime, this::delete);
 	}

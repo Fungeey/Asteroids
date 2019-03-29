@@ -17,28 +17,32 @@ import game.asteroids.entities.Player;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Timer;
 
+import static game.asteroids.screens.GameScreen.worldHeight;
+import static game.asteroids.screens.GameScreen.worldWidth;
+
 public class MainScreen implements Screen {
 	private final Asteroids game;
 	private final CollisionHandler collisionListener = new CollisionHandler();
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private PhysicsEngine engine;
-	private World world;
-
+	
 	public MainScreen(Asteroids game) {
 		this.game = game;
 	}
 
 	@Override
 	public void show() {
-		world = new World(Vector2.Zero, true);
+		World world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
 		engine = new PhysicsEngine(world);
 
-		camera = new OrthographicCamera();
+		camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
+		//camera.position.set(worldWidth / 2, worldHeight / 2, 0);
+		
 		batch = new SpriteBatch();
-		batch.setTransformMatrix(camera.combined);
+		batch.setProjectionMatrix(camera.combined);
 
 		loadTextures();
 		Entity.initialize(bodyLoader, game.manager);
@@ -91,12 +95,13 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void dispose() {
-
+	
 	}
 
 	private void loadTextures() {
 		game.manager.load("ship.png", Texture.class);
 		game.manager.load("ship_burn.png", Texture.class);
+		game.manager.load("bullet_player.png", Texture.class);
 		game.manager.finishLoading();
 	}
 }
