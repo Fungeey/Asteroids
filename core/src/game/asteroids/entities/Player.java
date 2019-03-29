@@ -60,7 +60,7 @@ public class Player extends Entity {
 		}
 
 		// Thrusting
-		direction.setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
+		direction.setAngle(body.getAngle() * MathUtils.radiansToDegrees + 90);
 
 		if (Input.keyDown(Input.UP)) {
 			Vector2 thrust = new Vector2(direction).nor().scl(speed);

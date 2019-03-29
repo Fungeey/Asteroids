@@ -73,7 +73,7 @@ public class MainScreen implements Screen {
     
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.05f, 0f, 0.05f, 1);
+        Gdx.gl.glClearColor(0.15f, 0.10f, 0.15f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         engine.doPhysicsStep(delta);
@@ -100,7 +100,6 @@ public class MainScreen implements Screen {
             }
             batch.end();
         }
-        
     }
     
     @Override
