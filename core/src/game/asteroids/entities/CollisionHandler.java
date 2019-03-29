@@ -43,9 +43,11 @@ public class CollisionHandler implements ContactListener {
 			if (a.layer == LAYER_ASTEROIDS) {
 				Player.score += ((Asteroid)a).getPointValue();
 				a.delete();
+				((Player)b).loseLife();
 			} else {
 				Player.score += ((Asteroid)b).getPointValue();
 				b.delete();
+				((Player)a).loseLife();
 			}
 		} else if ((a.layer | b.layer) == (LAYER_ASTEROIDS | LAYER_PLAYER_BULLET)) {
 			if (a.layer == LAYER_ASTEROIDS) Player.score += ((Destructable) a).getPointValue();
@@ -53,7 +55,7 @@ public class CollisionHandler implements ContactListener {
 			a.delete();
 			b.delete();
 		}else if((a.layer | b.layer) == (LAYER_SAUCER | LAYER_PLAYER_BULLET)){
-			System.out.println("Shot a saucer");
+
 			if (a.layer == LAYER_SAUCER) Player.score += ((Destructable) a).getPointValue();
 			else Player.score += ((Destructable)b).getPointValue();
 			a.delete();

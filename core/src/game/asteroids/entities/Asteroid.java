@@ -25,6 +25,7 @@ public class Asteroid extends Entity implements Destructable {
 		initialize(getSprite(), CollisionHandler.LAYER_ASTEROIDS);
 		body.setTransform(position, body.getAngle());
 		applyRandomVelocity();
+		engine.numAsteroids++;
 	}
 
 	private String getSprite() {
@@ -76,9 +77,10 @@ public class Asteroid extends Entity implements Destructable {
 			}
 		}else if(size == AsteroidSize.MEDIUM){
 			for (int i = 0; i < 2; i++) {
-				Asteroid a = new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
+				Asteroid a = new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
 				a.body.setLinearVelocity(body.getLinearVelocity());
 			}
 		}
+		engine.numAsteroids--;
 	}
 }

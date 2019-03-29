@@ -22,12 +22,18 @@ public class Saucer extends Entity implements Destructable{
 	private Timer shootTimer;
 	private Timer lifeTimer;
 
+	public Saucer(PhysicsEngine engine){
+		this(engine, SaucerSize.values()[MathUtils.random(0, 1)]);
+	}
+
 	public Saucer(PhysicsEngine engine, SaucerSize size) {
 		super(engine);
 		this.size = size;
 
 		if(size == SaucerSize.SMALL && accuracy <= 360)
 			accuracy += 5;
+
+		engine.saucerPresent = true;
 
 		initialize(getSprite(), CollisionHandler.LAYER_SAUCER);
 		body.setFixedRotation(true);
@@ -95,5 +101,7 @@ public class Saucer extends Entity implements Destructable{
 		shootTimer.clear();
 		//directionTimer.clear();
 		lifeTimer.clear();
+
+		engine.saucerPresent = false;
 	}
 }

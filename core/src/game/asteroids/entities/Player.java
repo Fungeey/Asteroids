@@ -26,8 +26,9 @@ public class Player extends Entity {
 	private boolean canShoot;
 
 	private Sprite shipBurn;
+	private boolean resetPosition = false;
 
-	public static int lives;
+	public static int lives = 3;
 	public static int score;
 
 	private Vector2 direction;
@@ -51,6 +52,12 @@ public class Player extends Entity {
 	public void update() {
 		if(!body.isActive())
 			return;
+
+		if(resetPosition) {
+			body.setTransform(new Vector2(0, 0), 0f);
+			body.setLinearVelocity(new Vector2(0, 0));
+			resetPosition = false;
+		}
 
 		// Thrusting
 		direction.setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
@@ -117,8 +124,11 @@ public class Player extends Entity {
 			coolDownTimer.clear();
 	}
 
-	void setActive(boolean active){
-		body.setAwake(active);
+	//TODO: rename to something sensible
+	void loseLife(){
+		//body.setAwake(false);
+		resetPosition = true;
+		//lives--;
 	}
 
 	Vector2 getPosition(){

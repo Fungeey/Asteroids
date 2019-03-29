@@ -32,7 +32,8 @@ public class GameScreen implements Screen {
 	private OrthographicCamera camera;
 	private OrthographicCamera GUICamera;
 
-	private Timer saucerTimer;
+	private Timer saucerSpawner;
+	private Timer respawnAsteroids;
 
 	private PhysicsEngine engine;
 
@@ -66,9 +67,10 @@ public class GameScreen implements Screen {
 
 		Entity.initialize(bodyLoader, game.manager);
 
-		//for (int i = 0; i < 4; i++)
-		//	new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
+		spawnAsteroids();
 
+		//TODO: Decrease saucer time when less asteroids
+		saucerSpawner = Timer.startNew(10, this::spawnSaucer);
 
 		new Saucer(engine, Saucer.SaucerSize.LARGE);
 		Saucer.player = new Player(engine);
@@ -84,6 +86,9 @@ public class GameScreen implements Screen {
 		Timer.updateTimers(delta);
 		engine.updateEntities(delta);
 
+		if(engine.numAsteroids <= 0)
+			spawnAsteroids();
+
 		batch.begin();
 		{
 			batch.setProjectionMatrix(camera.combined);
@@ -93,6 +98,16 @@ public class GameScreen implements Screen {
 			GUI.draw(batch);
 		}
 		batch.end();
+	}
+
+	private void spawnAsteroids(){
+		for (int i = 0; i < 4; i++)
+			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
+	}
+
+	private void spawnSaucer(){
+		saucerSpawner = Timer.startNew(10, this::spawnSaucer);
+		new Saucer(engine);
 	}
 
 	@Override
