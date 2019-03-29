@@ -13,11 +13,15 @@ import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
-import game.asteroids.entities.*;
+import game.asteroids.entities.Entity;
+import game.asteroids.entities.Player;
+import game.asteroids.entities.SignalAsteroid;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
 import game.asteroids.utility.VectorUtils;
+import systems.CollisionHandler;
+import systems.GUI;
+import systems.Timer;
 
 import java.util.ArrayList;
 import java.util.Random;

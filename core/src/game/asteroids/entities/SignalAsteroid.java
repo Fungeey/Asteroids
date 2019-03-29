@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.utility.Sprites;
+import systems.CollisionHandler;
 
 import java.util.Random;
 

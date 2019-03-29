@@ -10,7 +10,8 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.input.Input;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
+import systems.CollisionHandler;
+import systems.Timer;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,7 @@ public class Player extends Entity {
 	private boolean isActive = true;
 
 	public static int lives = 3;
-	static int score;
+	public static int score;
 
 	private Vector2 direction;
 
@@ -131,13 +132,13 @@ public class Player extends Entity {
 	}
 
 	@Override
-	void delete(){
+	public void delete(){
 		super.delete();
 		if(coolDownTimer != null)
 			coolDownTimer.clear();
 	}
 
-	void loseLife(){
+	public void loseLife(){
 		if(!(engine.game.getScreen() instanceof GameScreen))
 			return;
 

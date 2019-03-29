@@ -10,7 +10,8 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.screens.HelpScreen;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
+import systems.CollisionHandler;
+import systems.Timer;
 
 public class Saucer extends Entity implements Destructable{
 	private static final float startVelocity = 300f;

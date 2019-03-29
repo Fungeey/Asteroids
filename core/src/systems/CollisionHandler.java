@@ -1,21 +1,24 @@
-package game.asteroids.entities;
+package systems;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import game.asteroids.entities.Destructable;
+import game.asteroids.entities.Entity;
+import game.asteroids.entities.Player;
 
 /**
  * Helper class that defines what happens when two Entities collide based on their collision mask settings
  */
 public class CollisionHandler implements ContactListener {
 	//<editor-fold desc="LAYER MASK SETUP">
-	static final short LAYER_DEFAULT = 0x0001;
-	static final short LAYER_ASTEROIDS = 0x0002;
-	static final short LAYER_PLAYER = 0x0004;
-	static final short LAYER_PLAYER_BULLET = 0x0008;
-	static final short LAYER_SAUCER = 0x0010;
-	static final short LAYER_SAUCER_BULLET = 0x0020;
+	public static final short LAYER_DEFAULT = 0x0001;
+	public static final short LAYER_ASTEROIDS = 0x0002;
+	public static final short LAYER_PLAYER = 0x0004;
+	public static final short LAYER_PLAYER_BULLET = 0x0008;
+	public static final short LAYER_SAUCER = 0x0010;
+	public static final short LAYER_SAUCER_BULLET = 0x0020;
 
 	private static final short MASK_DEFAULT = -1;
 	private static final short MASK_ASTEROIDS = LAYER_PLAYER | LAYER_SAUCER | LAYER_PLAYER_BULLET | LAYER_SAUCER_BULLET;
@@ -27,7 +30,7 @@ public class CollisionHandler implements ContactListener {
 
 	public static boolean playerInvincible;
 
-	static short getMask(short layer) {
+	public static short getMask(short layer) {
 		if (layer == LAYER_DEFAULT) return MASK_DEFAULT;
 		if (layer == LAYER_ASTEROIDS) return MASK_ASTEROIDS;
 		if (layer == LAYER_PLAYER) return MASK_PLAYER;

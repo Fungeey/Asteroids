@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
+import systems.CollisionHandler;
 
 import java.util.Random;
 

@@ -3,8 +3,8 @@ package game.asteroids;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import game.asteroids.entities.GUI;
 import game.asteroids.screens.GameScreen;
+import systems.GUI;
 
 /**
  * Main class for the game.
