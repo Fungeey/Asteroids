@@ -23,8 +23,8 @@ import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
 
 public class GameScreen implements Screen {
 
-	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER / 2.5f;
-	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER  / 2.5f;
+	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER / 3;
+	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER / 3;
 	public static final float buffer = 0.25f;
 
 	public static final Random rand = new Random();
@@ -73,7 +73,7 @@ public class GameScreen implements Screen {
 		spawnAsteroids();
 
 		//TODO: Decrease saucer time when less asteroids
-		saucerSpawner = Timer.startNew(10, this::spawnSaucer);
+		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
 
 		new Saucer(engine, Saucer.SaucerSize.LARGE);
 		Saucer.player = new Player(engine);
@@ -114,7 +114,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnSaucer(){
-		saucerSpawner = Timer.startNew(10, this::spawnSaucer);
+		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
 		new Saucer(engine);
 	}
 
