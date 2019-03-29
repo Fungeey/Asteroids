@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * It has 3 abilities: shooting bullets, thrusting, and teleportation
  */
 public class Player extends Entity {
-	private static final float turnSpeed = 15f;
+	private static final float turnSpeed = 10f;
 	private static final float speed = 20f;
 	private static final float maxSpeed = 15f;
 	private static final float bulletVelocity = 20f;

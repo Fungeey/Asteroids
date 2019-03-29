@@ -50,8 +50,8 @@ public class HelpScreen implements Screen {
         
         loadTextures();
         Entity.initialize(bodyLoader, game.manager);
-        
-        new Player(engine);
+
+        Player player = new Player(engine);
     
         new SignalAsteroid(engine, new Vector2(6, -5), () -> {
             dispose();
@@ -61,6 +61,10 @@ public class HelpScreen implements Screen {
         new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 1.5f), Vector2.Zero);
         new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 1.5f), Vector2.Zero);
         new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 1.5f), Vector2.Zero);
+
+        Saucer.player = player;
+        new Saucer(engine, Saucer.SaucerSize.LARGE).body.setTransform(5, -1, 0);
+        new Saucer(engine, Saucer.SaucerSize.SMALL).body.setTransform(8, -1, 0);
     }
     
     @Override
@@ -87,8 +91,8 @@ public class HelpScreen implements Screen {
             GUI.drawText(batch, "Menu", 360,-245, 1.5f);
 
             GUI.drawText(batch, "Controls:", -450, 340, 1f);
-            GUI.drawText(batch, "Asteroids:", -100, 340, 1f);
-            GUI.drawText(batch, "Saucers:", 250, 340, 1f);
+            GUI.drawText(batch, "Asteroids:", -120, 340, 1f);
+            GUI.drawText(batch, "Saucers:", 220, 340, 1f);
 
             GUI.drawText(batch,
                     "The basic controls are:\n" +
@@ -112,7 +116,18 @@ public class HelpScreen implements Screen {
                             "Asteroids don't collide with with\n" +
                             "other asteroids, but will collide\n" +
                             "with and destroy saucers.",
-                    -150, 300, 0.5f);
+                    -180, 300, 0.5f);
+
+            GUI.drawText(batch,
+                    "As the game progresses, saucers appear.\n" +
+                            "Saucers can shoot the player and\n" +
+                            "destroy asteroids with the bullets\n" +
+                            "that they shoot.\n\n" +
+                            "The larger saucer is easier to hit,\n" +
+                            "and shoots randomly.\n" +
+                            "The smaller saucer is more accurate\n" +
+                            "and yields more points.",
+                    160, 300, 0.5f);
 
         }
         batch.end();
@@ -148,6 +163,7 @@ public class HelpScreen implements Screen {
     @Override
     public void dispose() {
         game.manager.clear();
+        Timer.clearAll();
     }
     
     void loadTextures() {

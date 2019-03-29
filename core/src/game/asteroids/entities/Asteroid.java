@@ -6,6 +6,8 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 
+import java.util.Random;
+
 /**
  * Asteroid Entity, comes in 3 sizes, each with their own sprite and point value
  */
@@ -30,6 +32,8 @@ public class Asteroid extends Entity implements Destructable {
 		initialize(getSprite(), CollisionHandler.LAYER_ASTEROIDS);
 		body.setTransform(position, body.getAngle());
 		body.setLinearVelocity(velocity);
+		Random random = new Random();
+		body.applyTorque((random.nextFloat() + 1) * body.getMass() * (random.nextBoolean() ? 1 : -1), true);
 		engine.numAsteroids++;
 	}
 
