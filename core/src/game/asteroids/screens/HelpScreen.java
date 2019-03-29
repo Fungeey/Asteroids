@@ -16,7 +16,6 @@ import game.asteroids.entities.*;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
-import game.asteroids.utility.VectorUtils;
 
 import static game.asteroids.screens.GameScreen.worldHeight;
 import static game.asteroids.screens.GameScreen.worldWidth;
@@ -58,6 +57,10 @@ public class HelpScreen implements Screen {
             dispose();
             game.setScreen(new MainScreen(game));
         });
+
+        new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 1.5f), Vector2.Zero);
+        new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 1.5f), Vector2.Zero);
+        new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 1.5f), Vector2.Zero);
     }
     
     @Override
@@ -82,11 +85,42 @@ public class HelpScreen implements Screen {
     
             batch.setProjectionMatrix(GUICamera.combined);
             GUI.drawText(batch, "Menu", 360,-245, 1.5f);
-    
-            GUI.drawText(batch, "Asteroids will appear \n asdf", -320, 65, 0.6f);
+
+            GUI.drawText(batch, "Controls:", -450, 340, 1f);
+            GUI.drawText(batch, "Asteroids:", -100, 340, 1f);
+            GUI.drawText(batch, "Saucers:", 250, 340, 1f);
+
+            GUI.drawText(batch,
+                    "The basic controls are:\n" +
+                            "up arrow to thrust\n" +
+                            "left and right arrow to turn\n" +
+                            "space to shoot\n\n" +
+                            "When objects go off screen, they\n" +
+                            "wrap around to the other side.\n\n" +
+                            "Your ship is also equipped with\n" +
+                            "a hyperdrive which you can activate\n" +
+                            "with the shift button.\n" +
+                            "However, using it is dangerous as\n" +
+                            "you may reenter inside an object!",
+                    -500, 300, 0.5f);
+
+            GUI.drawText(batch,
+                    "Asteroids come in 3 different sizes.\n" +
+                            "Smaller asteroids yield more points.\n\n" +
+                            "If you shoot an asteroid, it breaks\n" +
+                            "into two smaller asteroids.\n" +
+                            "Asteroids don't collide with with\n" +
+                            "other asteroids, but will collide\n" +
+                            "with and destroy saucers.",
+                    -150, 300, 0.5f);
+
         }
         batch.end();
-    
+
+        if (Gdx.input.justTouched()) {
+            Vector3 d = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+            System.out.println(d.x + " " + d.y);
+        }
     
         
     }

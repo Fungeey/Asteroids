@@ -19,12 +19,17 @@ public class Asteroid extends Entity implements Destructable {
 	}
 
 	public Asteroid(PhysicsEngine engine, AsteroidSize size, Vector2 position) {
+		this(engine, size, position, Vector2.Zero);
+		applyRandomVelocity();
+	}
+
+	public Asteroid(PhysicsEngine engine, AsteroidSize size, Vector2 position, Vector2 velocity) {
 		super(engine);
 		this.size = size;
 
 		initialize(getSprite(), CollisionHandler.LAYER_ASTEROIDS);
 		body.setTransform(position, body.getAngle());
-		applyRandomVelocity();
+		body.setLinearVelocity(velocity);
 		engine.numAsteroids++;
 	}
 

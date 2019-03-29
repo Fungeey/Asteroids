@@ -1,5 +1,9 @@
 package game.asteroids.entities;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import game.asteroids.PhysicsEngine;
@@ -14,6 +18,7 @@ public class Saucer extends Entity implements Destructable{
 	private static final float bulletVelocity = 20f;
 
 	public static Player player;
+	private Sprite spriteAlt;
 
 	private SaucerSize size;
 	private boolean toDestroy = false;
@@ -35,7 +40,9 @@ public class Saucer extends Entity implements Destructable{
 
 		engine.saucerPresent = true;
 
-		initialize(getSprite(), CollisionHandler.LAYER_SAUCER);
+		initialize(size == SaucerSize.SMALL ? Sprites.SAUCER_SMALL_SPRITE_1 : Sprites.SAUCER_LARGE_SPRITE_1, CollisionHandler.LAYER_SAUCER);
+		this.spriteAlt = new Sprite(assets.get(size == SaucerSize.SMALL ? Sprites.SAUCER_SMALL_SPRITE_2 : Sprites.SAUCER_LARGE_SPRITE_2, Texture.class));
+		spriteAlt.setOriginCenter();
 		body.setFixedRotation(true);
 
 		float x = (GameScreen.worldWidth / 2 + GameScreen.buffer) * MathUtils.randomSign();
@@ -81,22 +88,24 @@ public class Saucer extends Entity implements Destructable{
 			this.delete();
 	}
 
-	private String getSprite() {
-		if (size == SaucerSize.SMALL) {
-			if((engine.elapsedTicks/10) % 2 == 0)
-				return Sprites.SAUCER_SMALL_SPRITE_1;
-			else
-				return Sprites.SAUCER_SMALL_SPRITE_2;
-		}
-
+	private Sprite getSprite() {
 		if((engine.elapsedTicks/10) % 2 == 0)
-			return Sprites.SAUCER_LARGE_SPRITE_1;
+			return sprite;
 		else
-			return Sprites.SAUCER_LARGE_SPRITE_2;
+			return spriteAlt;
 	}
 
 	public enum SaucerSize {
 		SMALL, LARGE
+	}
+
+	@Override
+	public void draw(SpriteBatch batch, AssetManager manager) {
+		if (!body.isActive())
+			return;
+
+		Vector2 pos = body.getPosition();
+		batch.draw(getSprite(), pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
 	}
 
 	@Override
