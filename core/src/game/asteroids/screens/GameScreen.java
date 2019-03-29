@@ -48,7 +48,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
-		Gdx.graphics.setResizable(false);
 		World world = new World(Vector2.Zero, true);
 		world.setContactListener(collisionListener);
 
@@ -141,7 +140,6 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 	    game.manager.clear();
-		GUI.dispose();
 		Timer.clearAll();
 	}
 
@@ -160,6 +158,7 @@ public class GameScreen implements Screen {
 		game.manager.load(Sprites.SAUCER_LARGE_SPRITE_2, Texture.class);
 		game.manager.load(Sprites.SAUCER_SMALL_SPRITE_1, Texture.class);
 		game.manager.load(Sprites.SAUCER_SMALL_SPRITE_2, Texture.class);
+		
 		game.manager.finishLoading();
 	}
 }

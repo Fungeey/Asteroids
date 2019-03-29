@@ -43,7 +43,6 @@ public class MainScreen implements Screen {
         engine = new PhysicsEngine(world);
         
         camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
-        //camera.position.set(worldWidth / 2, worldHeight / 2, 0);
         
         float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
         GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
@@ -97,6 +96,13 @@ public class MainScreen implements Screen {
                 GUI.drawText(batch, "Start Game", 170, 90, 1.5f);
                 GUI.drawText(batch, "Tutorial", 170, -15, 1.5f);
                 GUI.drawText(batch, "Quit Game", 170, -115, 1.5f);
+                batch.draw(game.manager.get(Sprites.UP_KEY, Texture.class), -400, 30);
+                batch.draw(game.manager.get(Sprites.ARROW_KEYS, Texture.class), -400, -50);
+                batch.draw(game.manager.get(Sprites.SPACEBAR, Texture.class), -400, -120);
+                GUI.drawText(batch, "thrust", -320, 65, 1);
+                GUI.drawText(batch, "turn", -250, -15, 1);
+                GUI.drawText(batch, "shoot", -250, -85, 1);
+                
             }
             batch.end();
         }
@@ -133,8 +139,14 @@ public class MainScreen implements Screen {
         game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
         game.manager.load(Sprites.PLAYER_BURN, Texture.class);
         game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
+        
         game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
         game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);
+    
+    
+        game.manager.load(Sprites.ARROW_KEYS, Texture.class);
+        game.manager.load(Sprites.UP_KEY, Texture.class);
+        game.manager.load(Sprites.SPACEBAR, Texture.class);
         game.manager.finishLoading();
     }
 }
