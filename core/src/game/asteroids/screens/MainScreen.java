@@ -18,6 +18,9 @@ import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 import game.asteroids.utility.VectorUtils;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import static game.asteroids.screens.GameScreen.worldHeight;
 import static game.asteroids.screens.GameScreen.worldWidth;
 
@@ -28,35 +31,38 @@ public class MainScreen implements Screen {
     private OrthographicCamera camera;
     private OrthographicCamera GUICamera;
     private PhysicsEngine engine;
-    
+
     boolean exiting = false;
-    
+
+	ArrayList<Vector2> stars;
+	Random rand = new Random();
+
     public MainScreen(Asteroids game) {
         this.game = game;
     }
-    
+
     @Override
     public void show() {
         World world = new World(Vector2.Zero, true);
         world.setContactListener(collisionListener);
         BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("bodies.json"));
         engine = new PhysicsEngine(world);
-        
+
         camera = new OrthographicCamera(worldWidth * 1, worldHeight * 1);
-        
+
         float aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
         GUICamera = new OrthographicCamera(1024, 1024*aspectRatio);
-        
-        batch = new SpriteBatch();
+
+		batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-        
-        loadTextures();
+
+		loadTextures();
         Entity.initialize(bodyLoader, game.manager);
-        
-        
-        new Player(engine);
-        
-        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 380, 0))), () -> {
+
+
+		new Player(engine);
+
+		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 380, 0))), () -> {
             dispose();
             game.setScreen(new GameScreen(game));
         });
@@ -68,14 +74,19 @@ public class MainScreen implements Screen {
             dispose();
             Gdx.app.exit();
         });
+
+		stars = new ArrayList<>();
+		for (int i = 0; i < 200; i++) {
+			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
+		}
     }
-    
-    @Override
+
+	@Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.05f, 0f, 0.05f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
-        engine.doPhysicsStep(delta);
+
+		engine.doPhysicsStep(delta);
         Input.update();
         Timer.updateTimers(delta);
         engine.updateEntities(delta);
@@ -83,15 +94,15 @@ public class MainScreen implements Screen {
             batch.begin();
             {
                 batch.setProjectionMatrix(camera.combined);
+
+				for (Vector2 v : stars)
+					batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), v.x, v.y, 0.1f, 0.1f);
+				stars.remove(0);
+				stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
+
                 engine.drawEntities(batch, game.manager);
-    
-                for (int x = -10; x < 10; x++) {
-                    for (int y = -10; y < 10; y++) {
-                        batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), x, y, 0.1f, 0.1f);
-                    }
-                }
-                
-                batch.setProjectionMatrix(GUICamera.combined);
+
+				batch.setProjectionMatrix(GUICamera.combined);
                 GUI.drawText(batch, "Asteroids!", -400, 250, 3);
                 GUI.drawText(batch, "Start Game", 170, 90, 1.5f);
                 GUI.drawText(batch, "Tutorial", 170, -15, 1.5f);
@@ -102,49 +113,49 @@ public class MainScreen implements Screen {
                 GUI.drawText(batch, "thrust", -320, 65, 1);
                 GUI.drawText(batch, "turn", -250, -15, 1);
                 GUI.drawText(batch, "shoot", -250, -85, 1);
-                
-            }
+
+			}
             batch.end();
         }
-        
-    }
-    
-    @Override
+
+	}
+
+	@Override
     public void resize(int width, int height) {
-    
-    }
-    
-    @Override
+
+	}
+
+	@Override
     public void pause() {
-    
-    }
-    
-    @Override
+
+	}
+
+	@Override
     public void resume() {
-    
-    }
-    
-    @Override
+
+	}
+
+	@Override
     public void hide() {
-    
-    }
-    
-    @Override
+
+	}
+
+	@Override
     public void dispose() {
         exiting = true;
         game.manager.clear();
     }
-    
-    private void loadTextures() {
+
+	private void loadTextures() {
         game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
         game.manager.load(Sprites.PLAYER_BURN, Texture.class);
         game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
-        
-        game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
+
+		game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
         game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);
-    
-    
-        game.manager.load(Sprites.ARROW_KEYS, Texture.class);
+
+
+		game.manager.load(Sprites.ARROW_KEYS, Texture.class);
         game.manager.load(Sprites.UP_KEY, Texture.class);
         game.manager.load(Sprites.SPACEBAR, Texture.class);
         game.manager.finishLoading();

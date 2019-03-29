@@ -17,6 +17,7 @@ import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static game.asteroids.utility.Sprites.PIXELS_PER_METER;
@@ -46,6 +47,8 @@ public class GameScreen implements Screen {
 		this.game = game;
 	}
 
+	ArrayList<Vector2> stars;
+
 	@Override
 	public void show() {
 		World world = new World(Vector2.Zero, true);
@@ -65,11 +68,14 @@ public class GameScreen implements Screen {
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(camera.combined);
 
-		Random rand = new Random();
-
 		Entity.initialize(bodyLoader, game.manager);
 
 		spawnAsteroids();
+
+		stars = new ArrayList<>();
+		for (int i = 0; i < 200; i++) {
+			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
+		}
 
 		//TODO: Decrease saucer time when less asteroids
 		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
@@ -80,7 +86,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+		Gdx.gl.glClearColor(0.05f, 0f, 0.05f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.doPhysicsStep(delta);
@@ -94,6 +100,12 @@ public class GameScreen implements Screen {
 		batch.begin();
 		{
 			batch.setProjectionMatrix(camera.combined);
+
+			for (Vector2 v : stars)
+				batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), v.x, v.y, 0.1f, 0.1f);
+			stars.remove(0);
+			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
+
 			engine.drawEntities(batch, game.manager);
 
 			batch.setProjectionMatrix(GUICamera.combined);
