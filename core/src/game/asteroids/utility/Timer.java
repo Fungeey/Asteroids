@@ -36,4 +36,8 @@ public class Timer {
 			timers.get(i).update(delta);
 		}
 	}
+	
+	public static void clearAll() {
+		timers.clear();
+	}
 }

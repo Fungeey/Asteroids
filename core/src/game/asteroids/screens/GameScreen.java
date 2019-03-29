@@ -98,9 +98,14 @@ public class GameScreen implements Screen {
 			engine.drawEntities(batch, game.manager);
 
 			batch.setProjectionMatrix(GUICamera.combined);
-			GUI.draw(batch);
+			GUI.drawScore(batch);
 		}
 		batch.end();
+		
+		if (Input.keyPressed(Input.LCTRL)) {
+			dispose();
+			game.setScreen(new MainScreen(game));
+		}
 	}
 
 	private void spawnAsteroids(){
@@ -135,7 +140,9 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+	    game.manager.clear();
 		GUI.dispose();
+		Timer.clearAll();
 	}
 
 	private void loadTextures() {
