@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
@@ -14,9 +15,13 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.CollisionHandler;
 import game.asteroids.entities.Entity;
 import game.asteroids.entities.Player;
+import game.asteroids.entities.SignalAsteroid;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
+import game.asteroids.utility.VectorUtils;
+
+import javax.xml.soap.Text;
 
 import static game.asteroids.screens.GameScreen.worldHeight;
 import static game.asteroids.screens.GameScreen.worldWidth;
@@ -47,8 +52,10 @@ public class MainScreen implements Screen {
 
 		loadTextures();
 		Entity.initialize(bodyLoader, game.manager);
-
+		
+		
 		new Player(engine);
+		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(385, 200, 0))), () -> game.setScreen(new GameScreen(game)));
 	}
 
 	@Override
@@ -64,12 +71,23 @@ public class MainScreen implements Screen {
 		batch.begin();
 		{
 			engine.drawEntities(batch, game.manager);
+			for (int x = -10; x < 10; x++) {
+				for (int y = -10; y < 10; y++) {
+					batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), x, y, 0.1f, 0.1f);
+				}
+			}
+			Vector3 d = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			batch.draw(game.manager.get(Sprites.ASTEROID_SMALL, Texture.class), d.x, d.y, 1, 1);
 		}
 		batch.end();
 
 
 		if (Input.keyPressed(Input.LCTRL)) {
 			game.setScreen(new GameScreen(game));
+		}
+		
+		if (Gdx.input.justTouched()) {
+			System.out.println(Gdx.input.getX() + " " + Gdx.input.getY());
 		}
 
 	}
@@ -103,6 +121,8 @@ public class MainScreen implements Screen {
 		game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
 		game.manager.load(Sprites.PLAYER_BURN, Texture.class);
 		game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
+		game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
+		game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);
 		game.manager.finishLoading();
 	}
 }

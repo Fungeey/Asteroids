@@ -29,11 +29,15 @@ public abstract class Entity {
 	}
 
 	Entity(PhysicsEngine engine, boolean fixedRotation) {
+		this(engine, fixedRotation, BodyDef.BodyType.DynamicBody);
+	}
+	
+	Entity(PhysicsEngine engine, boolean fixedRotation, BodyDef.BodyType bodyType) {
 		this.engine = engine;
 		engine.addEntity(this);
-
+		
 		BodyDef def = new BodyDef();
-		def.type = BodyDef.BodyType.DynamicBody;
+		def.type = bodyType;
 		def.fixedRotation = fixedRotation;
 		this.body = engine.world.createBody(def);
 		this.body.setUserData(this);
@@ -92,6 +96,8 @@ public abstract class Entity {
 			return CollisionHandler.MASK_ASTEROIDS;
 		if (layer == CollisionHandler.LAYER_PLAYER)
 			return CollisionHandler.MASK_PLAYER;
+		if (layer == CollisionHandler.LAYER_SIGNAL)
+			return CollisionHandler.MASK_ASTEROIDS;
 		return CollisionHandler.MASK_PLAYER_BULLET;
 	}
 

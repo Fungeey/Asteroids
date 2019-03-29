@@ -42,7 +42,7 @@ public class Asteroid extends Entity implements Destructable {
 	private void applyRandomVelocity() {
 		randomizeAngle();
 		Vector2 thrust = new Vector2(0, 1).setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
-		body.applyForceToCenter(thrust.nor().scl(GameScreen.rand.nextFloat() * startVelocity), true);
+		body.applyForceToCenter(thrust.nor().scl(GameScreen.rand.nextFloat() * startVelocity * body.getMass()), true);
 		body.applyTorque(10f, true);
 	}
 
@@ -71,11 +71,15 @@ public class Asteroid extends Entity implements Destructable {
 	@Override
 	public void onDestroy() {
 		if(size == AsteroidSize.LARGE){
-			new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
-			new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
+			for (int i = 0; i < 2; i++) {
+				Asteroid a = new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
+				a.body.setLinearVelocity(body.getLinearVelocity());
+			}
 		}else if(size == AsteroidSize.MEDIUM){
-			new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
-			new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
+			for (int i = 0; i < 2; i++) {
+				Asteroid a = new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
+				a.body.setLinearVelocity(body.getLinearVelocity());
+			}
 		}
 	}
 }

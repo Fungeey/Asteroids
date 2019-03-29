@@ -16,6 +16,7 @@ public class CollisionHandler implements ContactListener {
 	static final short MASK_PLAYER = LAYER_ASTEROIDS;
 	static final short LAYER_PLAYER = 0x0004;
 	static final short LAYER_PLAYER_BULLET = 0x0008;
+	static final short LAYER_SIGNAL = 0x10;
 	static final short MASK_ASTEROIDS = LAYER_PLAYER | LAYER_PLAYER_BULLET;
 	static final short MASK_DEFAULT = -1; // Collide with everything
 	//</editor-fold>
@@ -33,7 +34,7 @@ public class CollisionHandler implements ContactListener {
 				b.delete();
 			}
 		} else if ((a.layer | b.layer) == (LAYER_PLAYER_BULLET | LAYER_ASTEROIDS)) {
-			if (a.layer == LAYER_ASTEROIDS) Player.score += ((Asteroid) a).getPointValue();
+			if (a.layer == LAYER_ASTEROIDS) Player.score += ((Destructable) a).getPointValue();
 			else Player.score += ((Asteroid)b).getPointValue();
 			a.delete();
 			b.delete();
