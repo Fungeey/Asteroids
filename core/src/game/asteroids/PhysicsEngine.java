@@ -37,7 +37,8 @@ public class PhysicsEngine {
 		elapsedSeconds += delta;
 
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update();
+			if(!toDelete.contains(entities.get(i)))
+				entities.get(i).update();
 		}
 
 		deleteEntities();
@@ -45,7 +46,8 @@ public class PhysicsEngine {
 
 	public void drawEntities(SpriteBatch batch, AssetManager manager) {
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).draw(batch, manager);
+			if(!toDelete.contains(entities.get(i)))
+				entities.get(i).draw(batch, manager);
 		}
 	}
 
@@ -69,5 +71,9 @@ public class PhysicsEngine {
 	public void deleteEntity(Entity entity) {
 		if (!toDelete.contains(entity))
 			toDelete.add(entity);
+	}
+
+	public boolean isOnDeleteList(Entity e){
+		return toDelete.contains(e);
 	}
 }

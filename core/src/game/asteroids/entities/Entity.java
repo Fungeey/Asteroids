@@ -29,15 +29,11 @@ public abstract class Entity {
 	}
 
 	Entity(PhysicsEngine engine, boolean fixedRotation) {
-		this(engine, fixedRotation, BodyDef.BodyType.DynamicBody);
-	}
-	
-	Entity(PhysicsEngine engine, boolean fixedRotation, BodyDef.BodyType bodyType) {
 		this.engine = engine;
 		engine.addEntity(this);
-		
+
 		BodyDef def = new BodyDef();
-		def.type = bodyType;
+		def.type = BodyDef.BodyType.DynamicBody;
 		def.fixedRotation = fixedRotation;
 		this.body = engine.world.createBody(def);
 		this.body.setUserData(this);
@@ -67,7 +63,7 @@ public abstract class Entity {
 		fix.restitution = 0.3f;
 
 		fix.filter.categoryBits = layer;
-		fix.filter.maskBits = getMask(layer);
+		fix.filter.maskBits = CollisionHandler.getMask(layer);
 
 		return fix;
 	}
@@ -87,18 +83,6 @@ public abstract class Entity {
 		}
 
 		shape.dispose();
-	}
-
-	private short getMask(short layer) {
-		if (layer == CollisionHandler.LAYER_DEFAULT)
-			return CollisionHandler.MASK_DEFAULT;
-		if (layer == CollisionHandler.LAYER_ASTEROIDS)
-			return CollisionHandler.MASK_ASTEROIDS;
-		if (layer == CollisionHandler.LAYER_PLAYER)
-			return CollisionHandler.MASK_PLAYER;
-		if (layer == CollisionHandler.LAYER_SIGNAL)
-			return CollisionHandler.MASK_ASTEROIDS;
-		return CollisionHandler.MASK_PLAYER_BULLET;
 	}
 
 	public abstract void update();
@@ -122,20 +106,27 @@ public abstract class Entity {
 		body.setTransform(position, body.getAngle());
 	}
 
-	void wrap() {
-		float buffer = 0.25f;
-		float w = GameScreen.worldWidth / 2 + buffer;
-		float h = GameScreen.worldHeight / 2 + buffer;
+	boolean wrap() {
+		float w = GameScreen.worldWidth / 2 + GameScreen.buffer;
+		float h = GameScreen.worldHeight / 2 + GameScreen.buffer;
 
 		Vector2 pos = body.getPosition();
-		if (pos.x < -w)
+		boolean wrapped = false;
+		if (pos.x < -w) {
 			setPosition(w, pos.y);
-		else if (pos.x > w)
+			wrapped = true;
+		}else if (pos.x > w) {
 			setPosition(-w, pos.y);
-		if (pos.y < -h)
+			wrapped = true;
+		}
+		if (pos.y < -h) {
 			setPosition(pos.x, h);
-		else if (pos.y > h)
+			wrapped = true;
+		}else if (pos.y > h) {
 			setPosition(pos.x, -h);
+			wrapped = true;
+		}
+		return wrapped;
 	}
 
 	void delete() {

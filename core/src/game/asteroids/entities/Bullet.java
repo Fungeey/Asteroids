@@ -23,7 +23,10 @@ public class Bullet extends Entity{
 		this.type = type;
 		setPosition(position);
 
-		initialize(getSprite(), getShape(), CollisionHandler.LAYER_PLAYER_BULLET);
+		if(type == BulletType.PLAYER)
+			initialize(getSprite(), getShape(), CollisionHandler.LAYER_PLAYER_BULLET);
+		else
+			initialize(getSprite(), getShape(), CollisionHandler.LAYER_SAUCER_BULLET);
 		body.setLinearVelocity(velocity);
 
 		lifeTimer = Timer.startNew(lifeTime, this::delete);
@@ -54,7 +57,8 @@ public class Bullet extends Entity{
 	}
 
 	public void update(){
-		wrap();
+		if(wrap() && type == BulletType.SAUCER)
+			this.delete();
 	}
 
 }

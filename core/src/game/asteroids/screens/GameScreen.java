@@ -12,7 +12,7 @@ import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.*;
-import game.asteroids.input.Input;
+import game.asteroids.input.*;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
@@ -24,6 +24,7 @@ public class GameScreen implements Screen {
 
 	public static final float worldWidth = Gdx.graphics.getWidth() / PIXELS_PER_METER;
 	public static final float worldHeight = Gdx.graphics.getHeight() / PIXELS_PER_METER;
+	public static final float buffer = 0.25f;
 
 	public static final Random rand = new Random();
 
@@ -63,13 +64,12 @@ public class GameScreen implements Screen {
 
 		Entity.initialize(bodyLoader, game.manager);
 
-		for (int i = 0; i < 10; i++) {
-			new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, Entity.randomPosition());
-			new Asteroid(engine, Asteroid.AsteroidSize.SMALL, Entity.randomPosition());
-			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
-		}
+		//for (int i = 0; i < 4; i++)
+		//	new Asteroid(engine, Asteroid.AsteroidSize.LARGE, Entity.randomPosition());
 
-		new Player(engine);
+
+		new Saucer(engine, Saucer.SaucerSize.SMALL);
+		Saucer.player = new Player(engine);
 	}
 
 	@Override
@@ -81,6 +81,12 @@ public class GameScreen implements Screen {
 		Input.update();
 		Timer.updateTimers(delta);
 		engine.updateEntities(delta);
+
+		if(Input.keyPressed(Input.ESCAPE)) {
+			if(Saucer.accuracy <= 360)
+			Saucer.accuracy += 5;
+			System.out.println(Saucer.accuracy);
+		}
 
 		batch.begin();
 		{
@@ -122,10 +128,17 @@ public class GameScreen implements Screen {
 		game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);
 		game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
 		game.manager.load(Sprites.ASTEROID_LARGE, Texture.class);
+
 		game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
 		game.manager.load(Sprites.BULLET_SAUCER, Texture.class);
+
 		game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
 		game.manager.load(Sprites.PLAYER_BURN, Texture.class);
+
+		game.manager.load(Sprites.SAUCER_LARGE_SPRITE_1, Texture.class);
+		game.manager.load(Sprites.SAUCER_LARGE_SPRITE_2, Texture.class);
+		game.manager.load(Sprites.SAUCER_SMALL_SPRITE_1, Texture.class);
+		game.manager.load(Sprites.SAUCER_SMALL_SPRITE_2, Texture.class);
 		game.manager.finishLoading();
 	}
 }

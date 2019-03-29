@@ -49,6 +49,9 @@ public class Player extends Entity {
 	}
 
 	public void update() {
+		if(!body.isActive())
+			return;
+
 		// Thrusting
 		direction.setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
 
@@ -90,6 +93,9 @@ public class Player extends Entity {
 
 	@Override
 	public void draw(SpriteBatch batch, AssetManager manager) {
+		if(!body.isActive())
+			return;
+
 		Vector2 pos = body.getPosition();
 		batch.draw(getSprite(), pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
 	}
@@ -107,6 +113,15 @@ public class Player extends Entity {
 	@Override
 	void delete(){
 		super.delete();
-		coolDownTimer.clear();
+		if(coolDownTimer != null)
+			coolDownTimer.clear();
+	}
+
+	void setActive(boolean active){
+		body.setAwake(active);
+	}
+
+	Vector2 getPosition(){
+		return body.getPosition();
 	}
 }

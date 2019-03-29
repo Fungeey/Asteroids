@@ -35,12 +35,8 @@ public class Asteroid extends Entity implements Destructable {
 		return Sprites.ASTEROID_LARGE;
 	}
 
-	private void randomizeAngle() {
-		body.setTransform(body.getPosition(), GameScreen.rand.nextInt(360) * MathUtils.degreesToRadians);
-	}
-
 	private void applyRandomVelocity() {
-		randomizeAngle();
+		body.setTransform(body.getPosition(), GameScreen.rand.nextInt(360) * MathUtils.degreesToRadians);
 		Vector2 thrust = new Vector2(0, 1).setAngleRad(body.getAngle() + MathUtils.degreesToRadians * 90);
 		body.applyForceToCenter(thrust.nor().scl(GameScreen.rand.nextFloat() * startVelocity * body.getMass()), true);
 		body.applyTorque(10f, true);
@@ -48,6 +44,9 @@ public class Asteroid extends Entity implements Destructable {
 
 	@Override
 	public int getPointValue() {
+		if(engine.isOnDeleteList(this))
+			return 0;
+
 		switch (size) {
 			case SMALL:
 				return 100;

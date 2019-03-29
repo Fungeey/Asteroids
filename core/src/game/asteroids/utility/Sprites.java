@@ -7,6 +7,11 @@ public class Sprites {
 	public static final String PLAYER_SPRITE = DIRECTORY + "ship" + FILE_FORMAT;
 	public static final String PLAYER_BURN = DIRECTORY + "ship_burn" + FILE_FORMAT;
 
+	public static final String SAUCER_LARGE_SPRITE_1 = DIRECTORY + "saucer_large_1" + FILE_FORMAT;
+	public static final String SAUCER_LARGE_SPRITE_2 = DIRECTORY + "saucer_large_2" + FILE_FORMAT;
+	public static final String SAUCER_SMALL_SPRITE_1 = DIRECTORY + "saucer_small_1" + FILE_FORMAT;
+	public static final String SAUCER_SMALL_SPRITE_2 = DIRECTORY + "saucer_small_2" + FILE_FORMAT;
+
 	public static final String BULLET_PLAYER = DIRECTORY + "bullet_player" + FILE_FORMAT;
 	public static final String BULLET_SAUCER = DIRECTORY + "bullet_saucer" + FILE_FORMAT;
 
