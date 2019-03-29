@@ -28,13 +28,12 @@ public class Player extends Entity {
 	private ArrayList<Runnable> doNextFrame = new ArrayList<>();
 	private final Runnable loseLife = () -> lives--;
 
-
-
 	private Timer coolDownTimer;
 	private boolean canShoot;
 	private Sprite shipBurn;
 
 	private Timer respawnTimer;
+	private boolean isActive = true;
 
 	public static int lives = 3;
 	static int score;
@@ -97,8 +96,8 @@ public class Player extends Entity {
 		}
 
 		// Hyperjump
-		if (Input.keyPressed(Input.LSHIFT))
-			setPosition(randomPosition());
+		if (Input.keyPressed(Input.LSHIFT) && isActive)
+			hyperJump();
 
 		wrap();
 	}
@@ -112,6 +111,9 @@ public class Player extends Entity {
 	public void draw(SpriteBatch batch, AssetManager manager) {
 		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0)
 			return;
+		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive)
+			return;
+
 
 		Vector2 pos = body.getPosition();
 		batch.draw(getSprite(), pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
@@ -146,9 +148,22 @@ public class Player extends Entity {
 				body.setLinearVelocity(new Vector2(0, 0));
 			});
 
-			CollisionHandler.playerInvincible = true;
-			respawnTimer = Timer.startNew(2f, () -> CollisionHandler.playerInvincible = false);
+			setActive(false);
+			respawnTimer = Timer.startNew(2f, () -> setActive(true));
 		}
+	}
+
+	private void hyperJump(){
+		setActive(false);
+		Timer.startNew(0.5f, () -> {
+			setPosition(randomPosition());
+			setActive(true);
+		});
+	}
+
+	private void setActive(boolean active){
+		isActive = active;
+		CollisionHandler.playerInvincible = !active;
 	}
 
 	Vector2 getPosition(){

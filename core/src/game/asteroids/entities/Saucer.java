@@ -8,13 +8,14 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
+import game.asteroids.screens.HelpScreen;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.Timer;
 
 public class Saucer extends Entity implements Destructable{
 	private static final float startVelocity = 300f;
 	private static final float shootCoolDown = 1f;
-	public static float accuracy = 120;
+	private static float accuracy = 120;
 	private static final float bulletVelocity = 20f;
 
 	public static Player player;
@@ -48,13 +49,12 @@ public class Saucer extends Entity implements Destructable{
 		float x = (GameScreen.worldWidth / 2 + GameScreen.buffer) * MathUtils.randomSign();
 		float y = MathUtils.random((GameScreen.worldWidth / 2 - GameScreen.buffer)  * MathUtils.randomSign() * MathUtils.random(1f));
 
-		if(y > GameScreen.worldWidth/2)
-			System.out.println("Saucer Offscreen");
-
 		body.setTransform(new Vector2(x, y), body.getAngle());
 		body.applyForceToCenter(new Vector2(-x, 0).nor().scl(startVelocity), true);
 
-		shootTimer = Timer.startNew(shootCoolDown, this::shoot);
+		if(!(engine.game.getScreen() instanceof HelpScreen))
+			shootTimer = Timer.startNew(shootCoolDown, this::shoot);
+
 		lifeTimer = Timer.startNew(MathUtils.random(3, 5), () -> toDestroy = true);
 
 		directionTimer = Timer.startNew(MathUtils.random(1f, 3f), this::changeDirection);
@@ -124,7 +124,9 @@ public class Saucer extends Entity implements Destructable{
 
 	@Override
 	public void onDestroy() {
-		shootTimer.clear();
+		if(shootTimer != null)
+			shootTimer.clear();
+
 		directionTimer.clear();
 		lifeTimer.clear();
 
