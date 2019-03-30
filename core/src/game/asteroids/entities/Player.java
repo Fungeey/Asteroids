@@ -117,9 +117,9 @@ public class Player extends Entity {
 
 	@Override
 	public void draw(SpriteBatch batch, AssetManager manager) {
-		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0)
+		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0) // respawn blinking
 			return;
-		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive) //
+		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive) // hyperdrift
 			return;
 
 		Vector2 pos = body.getPosition();
