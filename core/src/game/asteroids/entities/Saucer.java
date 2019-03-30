@@ -46,8 +46,10 @@ public class Saucer extends Entity implements Destructable{
 
 		initialize(size == SaucerSize.SMALL ? Sprites.SAUCER_SMALL_SPRITE_1 : Sprites.SAUCER_LARGE_SPRITE_1, CollisionHandler.LAYER_SAUCER);
 		this.spriteAlt = new Sprite(assets.get(size == SaucerSize.SMALL ? Sprites.SAUCER_SMALL_SPRITE_2 : Sprites.SAUCER_LARGE_SPRITE_2, Texture.class));
-		spriteAlt.setOriginCenter();
 		body.setFixedRotation(true);
+		
+		sprite.setOrigin(0,0);
+		spriteAlt.setOrigin(0, 0);
 
 		float x = (GameScreen.worldWidth / 2 + GameScreen.buffer) * MathUtils.randomSign();
 		float y = MathUtils.random((GameScreen.worldWidth / 2 - GameScreen.buffer)  * MathUtils.randomSign() * MathUtils.random(1f));
