@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import game.asteroids.entities.Destructable;
 import game.asteroids.entities.Entity;
 import game.asteroids.entities.Player;
+import game.asteroids.entities.SignalAsteroid;
 
 /**
  * Helper class that defines what happens when two Entities collide based on their collision mask settings

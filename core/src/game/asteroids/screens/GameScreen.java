@@ -128,13 +128,7 @@ public class GameScreen implements Screen {
 				player.gameOver();
 
 				GUI.drawText(batch, "Game Over", -125, 100, 1.5f);
-				GUI.drawText(batch, "Press enter to continue", -200, -300, 1f);
-
-				if(Input.keyPressed(Input.ENTER)){
-					Sounds.play(Sounds.GAME_TRANSITION_1);
-					dispose();
-					game.setScreen(new MainScreen(game));
-				}
+				GUI.drawText(batch, "Press CTRL to continue", -200, -300, 1f);
 			}
 		}
 		batch.end();

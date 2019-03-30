@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import game.asteroids.screens.GameScreen;
+import game.asteroids.screens.HelpScreen;
+import game.asteroids.screens.MainScreen;
 import systems.GUI;
 import systems.Sounds;
 
@@ -22,7 +24,7 @@ public class Asteroids extends Game {
     public void create() {
         Gdx.graphics.setResizable(false);
         manager = new AssetManager();
-		this.setScreen(new GameScreen(this));
+		this.setScreen(new MainScreen(this));
     }
 
     @Override

@@ -88,7 +88,7 @@ public class MainScreen implements Screen {
 			dispose();
 			Gdx.app.exit();
 		});
-		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 800, 0))), () -> {
+		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 770, 0))), () -> {
 			Gdx.net.openURI("https://github.com/lightningstudios126/Asteroids");
 		});
 
@@ -120,13 +120,14 @@ public class MainScreen implements Screen {
                 GUI.drawText(batch, "Start Game", 170, 90, 1.5f);
                 GUI.drawText(batch, "Tutorial", 170, -15, 1.5f);
                 GUI.drawText(batch, "Quit Game", 170, -115, 1.5f);
-                batch.draw(game.manager.get(Sprites.UP_KEY, Texture.class), -400, 30);
-                batch.draw(game.manager.get(Sprites.ARROW_KEYS, Texture.class), -400, -50);
-                batch.draw(game.manager.get(Sprites.SPACEBAR, Texture.class), -400, -120);
-                GUI.drawText(batch, "thrust", -320, 65, 1);
-                GUI.drawText(batch, "turn", -250, -15, 1);
-                GUI.drawText(batch, "shoot", -250, -85, 1);
-
+                GUI.drawText(batch, "Github Repo", 170, -215, 1.5f);
+                batch.draw(game.manager.get(Sprites.UP_KEY, Texture.class), -400, -20);
+                batch.draw(game.manager.get(Sprites.ARROW_KEYS, Texture.class), -400, -100);
+                batch.draw(game.manager.get(Sprites.SPACEBAR, Texture.class), -400, -170);
+                GUI.drawText(batch, "thrust", -320, 15, 1);
+                GUI.drawText(batch, "turn", -250, -65, 1);
+                GUI.drawText(batch, "shoot", -250, -135, 1);
+                GUI.drawText(batch, "By Ethan Wong \n   and Aaron Lee", -400, 150, 0.75f);
 			}
             batch.end();
         }

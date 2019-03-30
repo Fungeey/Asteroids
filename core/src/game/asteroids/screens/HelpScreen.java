@@ -31,6 +31,8 @@ public class HelpScreen implements Screen {
     private OrthographicCamera GUICamera;
     private PhysicsEngine engine;
     
+    private boolean spawningAsteroids = false;
+    
     public HelpScreen (Asteroids game) {
         this.game = game;
     }
@@ -54,16 +56,17 @@ public class HelpScreen implements Screen {
         Entity.initialize(bodyLoader, game.manager);
 
         Player player = new Player(engine);
-    
+        player.body.setTransform(0, -1, 0);
+        
         new SignalAsteroid(engine, new Vector2(6, -5), () -> {
             Sounds.play(Sounds.GAME_TRANSITION_1);
             dispose();
             game.setScreen(new MainScreen(game));
         });
 
-        new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 1.5f), Vector2.Zero);
-        new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 1.5f), Vector2.Zero);
-        new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 1.5f), Vector2.Zero);
+        new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 0.6f), Vector2.Zero);
+        new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 0.6f), Vector2.Zero);
+        new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 0.6f), Vector2.Zero);
 
         Saucer.player = player;
         new Saucer(engine, Saucer.SaucerSize.LARGE).body.setTransform(5, -1, 0);
@@ -80,23 +83,27 @@ public class HelpScreen implements Screen {
         Timer.updateTimers(delta);
         engine.updateEntities(delta);
 
-        if(engine.numAsteroids == 0){
+        if(engine.numAsteroids == 0 && !spawningAsteroids){
             Timer.startNew(2f, () -> {
-                new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 1.5f), Vector2.Zero);
-                new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 1.5f), Vector2.Zero);
-                new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 1.5f), Vector2.Zero);
+                new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 0.6f), Vector2.Zero);
+                new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 0.6f), Vector2.Zero);
+                new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 0.6f), Vector2.Zero);
+                spawningAsteroids = false;
             });
+            spawningAsteroids = true;
         }
 
         batch.begin();
         {
             batch.setProjectionMatrix(camera.combined);
-            engine.drawEntities(batch, game.manager);
+    
             for (int x = -10; x < 10; x++) {
                 for (int y = -10; y < 10; y++) {
                     batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), x, y, 0.1f, 0.1f);
                 }
             }
+            
+            engine.drawEntities(batch, game.manager);
     
             batch.setProjectionMatrix(GUICamera.combined);
             GUI.drawText(batch, "Menu", 360,-245, 1.5f);
@@ -113,10 +120,12 @@ public class HelpScreen implements Screen {
                             "When objects go off screen, they\n" +
                             "wrap around to the other side.\n\n" +
                             "Your ship is also equipped with\n" +
-                            "a hyperdrive which you can activate\n" +
+                            "a hyperdrive which you can use\n" +
                             "with the shift button.\n" +
                             "However, using it is dangerous as\n" +
-                            "you may reenter inside an object!",
+                            "you may reenter inside an object!\n\n" +
+                            "Press CTRL to return to the menu\n" +
+                            "from the game screen.",
                     -500, 300, 0.5f);
 
             GUI.drawText(batch,
@@ -126,7 +135,9 @@ public class HelpScreen implements Screen {
                             "into two smaller asteroids.\n" +
                             "Asteroids don't collide with with\n" +
                             "other asteroids, but will collide\n" +
-                            "with and destroy saucers.",
+                            "with and destroy saucers.\n\n" +
+                            "When everything on screen have been\n" +
+                            "destroyed, new asteroids are created.",
                     -180, 300, 0.5f);
 
             GUI.drawText(batch,
@@ -142,13 +153,6 @@ public class HelpScreen implements Screen {
 
         }
         batch.end();
-
-        if (Gdx.input.justTouched()) {
-            Vector3 d = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            System.out.println(d.x + " " + d.y);
-        }
-    
-        
     }
     
     @Override
