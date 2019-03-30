@@ -6,6 +6,7 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 import systems.CollisionHandler;
+import systems.Particles;
 import systems.Sounds;
 
 import java.util.Random;
@@ -97,6 +98,8 @@ public class Asteroid extends Entity implements Destructable {
 		}else{
 			Sounds.play(Sounds.EXPLOSION_3);
 		}
+		
+		Particles.explode(body.getPosition().x, body.getPosition().y);
 		engine.numAsteroids--;
 	}
 }

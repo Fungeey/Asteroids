@@ -19,10 +19,7 @@ import game.asteroids.entities.SignalAsteroid;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
 import game.asteroids.utility.VectorUtils;
-import systems.CollisionHandler;
-import systems.GUI;
-import systems.Sounds;
-import systems.Timer;
+import systems.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -114,6 +111,7 @@ public class MainScreen implements Screen {
 				stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
 
                 engine.drawEntities(batch, game.manager);
+                Particles.update(batch, delta);
 
 				batch.setProjectionMatrix(GUICamera.combined);
                 GUI.drawText(batch, "Asteroids!", -400, 250, 3);
@@ -156,7 +154,7 @@ public class MainScreen implements Screen {
     @Override
     public void dispose() {
         exiting = true;
-        game.manager.clear();
+        Timer.clearAll();
     }
 
 	private void loadTextures() {

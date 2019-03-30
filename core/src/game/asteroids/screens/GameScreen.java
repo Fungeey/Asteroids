@@ -19,10 +19,7 @@ import game.asteroids.entities.Player;
 import game.asteroids.entities.Saucer;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
-import systems.CollisionHandler;
-import systems.GUI;
-import systems.Sounds;
-import systems.Timer;
+import systems.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -119,7 +116,9 @@ public class GameScreen implements Screen {
 			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
 
 			engine.drawEntities(batch, game.manager);
-
+			
+			Particles.update(batch, delta);
+			
 			batch.setProjectionMatrix(GUICamera.combined);
 			GUI.drawScore(batch);
 
@@ -179,7 +178,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-	    game.manager.clear();
 		Timer.clearAll();
 	}
 

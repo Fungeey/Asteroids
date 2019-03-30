@@ -7,6 +7,7 @@ import game.asteroids.screens.GameScreen;
 import game.asteroids.screens.HelpScreen;
 import game.asteroids.screens.MainScreen;
 import systems.GUI;
+import systems.Particles;
 import systems.Sounds;
 
 /**
@@ -24,14 +25,16 @@ public class Asteroids extends Game {
     public void create() {
         Gdx.graphics.setResizable(false);
         manager = new AssetManager();
+        Particles.initialize(this);
 		this.setScreen(new MainScreen(this));
     }
 
     @Override
     public void dispose() {
-        manager.dispose();
         GUI.dispose();
         Sounds.dispose();
+        Particles.dispose();
+        manager.dispose();
     }
 
 	@Override

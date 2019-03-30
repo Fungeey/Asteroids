@@ -11,6 +11,7 @@ import game.asteroids.screens.GameScreen;
 import game.asteroids.screens.HelpScreen;
 import game.asteroids.utility.Sprites;
 import systems.CollisionHandler;
+import systems.Particles;
 import systems.Sounds;
 import systems.Timer;
 
@@ -140,5 +141,7 @@ public class Saucer extends Entity implements Destructable{
 		lifeTimer.clear();
 
 		engine.saucerPresent = false;
+		
+		Particles.explode(body.getPosition().x, body.getPosition().y);
 	}
 }

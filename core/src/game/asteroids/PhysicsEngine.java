@@ -52,7 +52,7 @@ public class PhysicsEngine {
 
 	public void drawEntities(SpriteBatch batch, AssetManager manager) {
 		for (int i = 0; i < entities.size(); i++) {
-			if(!toDelete.contains(entities.get(i)))
+			if(!toDelete.contains(entities.get(i)) || !entities.get(i).isVisible)
 				entities.get(i).draw(batch, manager);
 		}
 	}

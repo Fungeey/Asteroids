@@ -24,6 +24,8 @@ public abstract class Entity {
 	Sprite sprite;
 	private String spriteID;
 	public short layer;
+	
+	public boolean isVisible = true;
 
 	Entity(PhysicsEngine engine) {
 		this(engine, false);

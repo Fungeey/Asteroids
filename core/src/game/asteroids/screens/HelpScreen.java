@@ -15,10 +15,7 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.entities.*;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
-import systems.CollisionHandler;
-import systems.GUI;
-import systems.Sounds;
-import systems.Timer;
+import systems.*;
 
 import static game.asteroids.screens.GameScreen.worldHeight;
 import static game.asteroids.screens.GameScreen.worldWidth;
@@ -104,7 +101,8 @@ public class HelpScreen implements Screen {
             }
             
             engine.drawEntities(batch, game.manager);
-    
+            Particles.update(batch, delta);
+            
             batch.setProjectionMatrix(GUICamera.combined);
             GUI.drawText(batch, "Menu", 360,-245, 1.5f);
 
@@ -177,7 +175,6 @@ public class HelpScreen implements Screen {
     
     @Override
     public void dispose() {
-        game.manager.clear();
         Timer.clearAll();
     }
     
