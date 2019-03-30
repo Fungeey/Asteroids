@@ -19,10 +19,7 @@ import game.asteroids.entities.Player;
 import game.asteroids.entities.Saucer;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
-import systems.CollisionHandler;
-import systems.GUI;
-import systems.Sounds;
-import systems.Timer;
+import systems.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -44,6 +41,7 @@ public class GameScreen implements Screen {
 
 	private Timer saucerSpawner;
 	private Timer respawnAsteroids;
+	private final int startingAsteroids = 10;
 
 	private Player player;
 
@@ -80,7 +78,7 @@ public class GameScreen implements Screen {
 		Entity.initialize(bodyLoader, game.manager);
 
 		//TODO: Decrease saucer time when less asteroids
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
+		saucerSpawner = Timer.startNew(1/(engine.asteroidsDestroyed/(startingAsteroids*70)+0.1f), this::spawnSaucer);
 
 		new Saucer(engine, Saucer.SaucerSize.LARGE);
 		Saucer.player = player = new Player(engine);
@@ -103,7 +101,7 @@ public class GameScreen implements Screen {
 		Timer.updateTimers(delta);
 		engine.updateEntities(delta);
 
-		if(engine.numAsteroids <= 0 && (respawnAsteroids == null || !respawnAsteroids.isRunning()))
+		if(engine.asteroidsDestroyed >= startingAsteroids * 7 && (respawnAsteroids == null || !respawnAsteroids.isRunning()))
 			respawnAsteroids = Timer.startNew(2f, this::spawnAsteroids);
 
 		if(Input.keyPressed(Input.ESCAPE))
@@ -119,7 +117,9 @@ public class GameScreen implements Screen {
 			stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
 
 			engine.drawEntities(batch, game.manager);
-
+			
+			Particles.update(batch, delta);
+			
 			batch.setProjectionMatrix(GUICamera.combined);
 			GUI.drawScore(batch);
 
@@ -128,13 +128,7 @@ public class GameScreen implements Screen {
 				player.gameOver();
 
 				GUI.drawText(batch, "Game Over", -125, 100, 1.5f);
-				GUI.drawText(batch, "Press enter to continue", -200, -300, 1f);
-
-				if(Input.keyPressed(Input.ENTER)){
-					Sounds.play(Sounds.GAME_TRANSITION_1);
-					dispose();
-					game.setScreen(new MainScreen(game));
-				}
+				GUI.drawText(batch, "Press CTRL to continue", -200, -300, 1f);
 			}
 		}
 		batch.end();
@@ -147,19 +141,21 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnAsteroids(){
-		for (int i = 0; i < 4; i++) {
+		engine.asteroidsDestroyed = 0;
+
+		for (int i = 0; i < startingAsteroids; i++) {
 			Vector2 position = Entity.randomPosition();
 			Vector2 target = player.body.getPosition();
-			if(target.sub(position).len() < 3){
+			if(target.sub(position).len() < 3)
 				position.sub(target.sub(position).nor().scl(5));
-			}
+
 			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, position);
 		}
 	}
 
 	private void spawnSaucer(){
 		Sounds.play(Sounds.SAUCER_APPEAR);
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
+		saucerSpawner = Timer.startNew(1/(engine.asteroidsDestroyed/(startingAsteroids*70)+0.1f), this::spawnSaucer);
 		new Saucer(engine);
 	}
 
@@ -185,7 +181,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
-	    game.manager.clear();
 		Timer.clearAll();
 	}
 

@@ -11,6 +11,7 @@ import game.asteroids.input.Input;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
 import systems.CollisionHandler;
+import systems.Particles;
 import systems.Sounds;
 import systems.Timer;
 
@@ -117,9 +118,9 @@ public class Player extends Entity {
 
 	@Override
 	public void draw(SpriteBatch batch, AssetManager manager) {
-		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0)
+		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0) // respawn blinking
 			return;
-		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive) //
+		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive) // hyperdrift
 			return;
 
 		Vector2 pos = body.getPosition();
@@ -162,6 +163,8 @@ public class Player extends Entity {
 
 			setActive(false);
 			respawnTimer = Timer.startNew(2f, () -> setActive(true));
+			
+			Particles.explode(getPosition().x, getPosition().y);
 		}
 	}
 
@@ -171,12 +174,14 @@ public class Player extends Entity {
 		Timer.startNew(0.5f, () -> {
 			setPosition(randomPosition());
 			setActive(true);
+			Particles.hyperdrive(getPosition().x, getPosition().y);
 		});
 	}
 
 	private void setActive(boolean active){
 		isActive = active;
 		CollisionHandler.playerInvincible = !active;
+		isVisible = active;
 	}
 
 	public void gameOver(){
