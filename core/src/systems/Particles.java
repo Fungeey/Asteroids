@@ -33,7 +33,6 @@ public class Particles {
     }
     
     public static void explode(float x, float y) {
-        System.out.println("explode");
         ParticleEffectPool.PooledEffect effect = explosionPool.obtain();
         effect.setPosition(x, y);
         effects.add(effect);
