@@ -19,7 +19,7 @@ public class PhysicsEngine {
 	public float elapsedSeconds = 0;
 	private float accumulator = 0;
 
-	public int numAsteroids = 0;
+	public int asteroidsDestroyed = 0;
 	public boolean saucerPresent = false;
 
 	public PhysicsEngine(World world, Game game) {

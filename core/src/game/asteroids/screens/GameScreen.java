@@ -41,6 +41,7 @@ public class GameScreen implements Screen {
 
 	private Timer saucerSpawner;
 	private Timer respawnAsteroids;
+	private final int startingAsteroids = 10;
 
 	private Player player;
 
@@ -77,7 +78,7 @@ public class GameScreen implements Screen {
 		Entity.initialize(bodyLoader, game.manager);
 
 		//TODO: Decrease saucer time when less asteroids
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
+		saucerSpawner = Timer.startNew(1/(engine.asteroidsDestroyed/(startingAsteroids*70)+0.1f), this::spawnSaucer);
 
 		new Saucer(engine, Saucer.SaucerSize.LARGE);
 		Saucer.player = player = new Player(engine);
@@ -100,7 +101,7 @@ public class GameScreen implements Screen {
 		Timer.updateTimers(delta);
 		engine.updateEntities(delta);
 
-		if(engine.numAsteroids <= 0 && (respawnAsteroids == null || !respawnAsteroids.isRunning()))
+		if(engine.asteroidsDestroyed >= startingAsteroids * 7 && (respawnAsteroids == null || !respawnAsteroids.isRunning()))
 			respawnAsteroids = Timer.startNew(2f, this::spawnAsteroids);
 
 		if(Input.keyPressed(Input.ESCAPE))
@@ -140,19 +141,21 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnAsteroids(){
-		for (int i = 0; i < 4; i++) {
+		engine.asteroidsDestroyed = 0;
+
+		for (int i = 0; i < startingAsteroids; i++) {
 			Vector2 position = Entity.randomPosition();
 			Vector2 target = player.body.getPosition();
-			if(target.sub(position).len() < 3){
+			if(target.sub(position).len() < 3)
 				position.sub(target.sub(position).nor().scl(5));
-			}
+
 			new Asteroid(engine, Asteroid.AsteroidSize.LARGE, position);
 		}
 	}
 
 	private void spawnSaucer(){
 		Sounds.play(Sounds.SAUCER_APPEAR);
-		saucerSpawner = Timer.startNew(30, this::spawnSaucer);
+		saucerSpawner = Timer.startNew(1/(engine.asteroidsDestroyed/(startingAsteroids*70)+0.1f), this::spawnSaucer);
 		new Saucer(engine);
 	}
 

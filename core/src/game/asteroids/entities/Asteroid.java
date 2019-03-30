@@ -37,7 +37,6 @@ public class Asteroid extends Entity implements Destructable {
 		body.setLinearVelocity(velocity);
 		Random random = new Random();
 		body.applyTorque((random.nextFloat() + 1) * body.getMass() * (random.nextBoolean() ? 1 : -1), true);
-		engine.numAsteroids++;
 	}
 
 	private String getSprite() {
@@ -87,19 +86,19 @@ public class Asteroid extends Entity implements Destructable {
 			Sounds.play(Sounds.EXPLOSION_1);
 			for (int i = 0; i < 2; i++) {
 				Asteroid a = new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
-				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.25f));
+				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.5f));
 			}
 		}else if(size == AsteroidSize.MEDIUM){
 			Sounds.play(Sounds.EXPLOSION_2);
 			for (int i = 0; i < 2; i++) {
 				Asteroid a = new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
-				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.25f));
+				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.5f));
 			}
 		}else{
 			Sounds.play(Sounds.EXPLOSION_3);
 		}
 		
 		Particles.explode(body.getPosition().x, body.getPosition().y);
-		engine.numAsteroids--;
+		engine.asteroidsDestroyed++;
 	}
 }

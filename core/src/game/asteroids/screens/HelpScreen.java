@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
@@ -80,8 +79,10 @@ public class HelpScreen implements Screen {
         Timer.updateTimers(delta);
         engine.updateEntities(delta);
 
-        if(engine.numAsteroids == 0 && !spawningAsteroids){
+        if(engine.asteroidsDestroyed == 11 && !spawningAsteroids){
             Timer.startNew(2f, () -> {
+                engine.asteroidsDestroyed = 0;
+
                 new Asteroid(engine, Asteroid.AsteroidSize.SMALL, new Vector2(-2f, 0.6f), Vector2.Zero);
                 new Asteroid(engine, Asteroid.AsteroidSize.MEDIUM, new Vector2(-0.2f, 0.6f), Vector2.Zero);
                 new Asteroid(engine, Asteroid.AsteroidSize.LARGE, new Vector2(1.8f, 0.6f), Vector2.Zero);
