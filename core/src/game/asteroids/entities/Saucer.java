@@ -10,7 +10,9 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.screens.HelpScreen;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
+import systems.CollisionHandler;
+import systems.Sounds;
+import systems.Timer;
 
 public class Saucer extends Entity implements Destructable{
 	private static final float startVelocity = 300f;
@@ -64,9 +66,11 @@ public class Saucer extends Entity implements Destructable{
 		shootTimer = Timer.startNew(shootCoolDown, this::shoot);
 
 		if(size == SaucerSize.LARGE) {
+			Sounds.play(Sounds.SAUCER_SHOOT_2);
 			Vector2 bulletDir = new Vector2 (0, 1).setAngle(MathUtils.random(0, 360));
 			new Bullet(engine, Bullet.BulletType.SAUCER, bulletDir.nor().scl(bulletVelocity), body.getPosition());
 		}else {
+			Sounds.play(Sounds.SAUCER_SHOOT_1);
 			float angle = MathUtils.atan2(player.getPosition().y-body.getPosition().y, player.getPosition().x-body.getPosition().x) * MathUtils.radiansToDegrees;
 			angle += ((360-accuracy)/2) * MathUtils.randomSign() * MathUtils.random((360-accuracy)/360);
 			Vector2 bulletDir = new Vector2 (0, 1).setAngle(angle);
@@ -75,6 +79,9 @@ public class Saucer extends Entity implements Destructable{
 	}
 
 	private void changeDirection(){
+		if(size == SaucerSize.LARGE) Sounds.play(Sounds.SAUCER_CHANGE_2);
+		else Sounds.play(Sounds.SAUCER_CHANGE_1);
+
 		Vector2 vel = body.getLinearVelocity();
 		vel.y = 3f * MathUtils.randomSign() * MathUtils.random(1f);
 		body.setLinearVelocity(vel);
@@ -124,6 +131,8 @@ public class Saucer extends Entity implements Destructable{
 
 	@Override
 	public void onDestroy() {
+		Sounds.play(Sounds.SAUCER_EXPLOSION);
+
 		if(shootTimer != null)
 			shootTimer.clear();
 

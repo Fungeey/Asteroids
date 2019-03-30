@@ -22,15 +22,14 @@ class Key {
 		boolean pressed = Gdx.input.isKeyPressed(id);
 
 		if (pressed) {
-			if (status == KeyStatus.up)
-				status = KeyStatus.pressed;
-			else if (status == KeyStatus.pressed)
-				status = KeyStatus.down;
+			if (status == KeyStatus.up) status = KeyStatus.pressed;
+			else if (status == KeyStatus.pressed) status = KeyStatus.down;
+			else status = KeyStatus.down;
 		} else {
-			if (status == KeyStatus.down)
-				status = KeyStatus.released;
-			else if (status == KeyStatus.released)
-				status = KeyStatus.up;
+			if (status == KeyStatus.down) status = KeyStatus.released;
+			else if (status == KeyStatus.released) status = KeyStatus.up;
+			else status = KeyStatus.up;
+
 		}
 	}
 

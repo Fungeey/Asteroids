@@ -5,7 +5,8 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
+import systems.CollisionHandler;
+import systems.Timer;
 
 /**
  * Bullet Entity, comes in two types, Player and Saucer, based on how they how different properties
@@ -46,7 +47,7 @@ public class Bullet extends Entity{
 	}
 
 	@Override
-	void delete(){
+	public void delete(){
 		super.delete();
 		lifeTimer.clear();
 	}

@@ -16,13 +16,14 @@ public class Input {
 	public static final Key ESCAPE = new Key(com.badlogic.gdx.Input.Keys.ESCAPE);
 	public static final Key LSHIFT = new Key(com.badlogic.gdx.Input.Keys.SHIFT_LEFT);
 	public static final Key LCTRL = new Key(com.badlogic.gdx.Input.Keys.CONTROL_LEFT);
+	public static final Key ENTER = new Key(com.badlogic.gdx.Input.Keys.ENTER);
 
 	public static final Key W = new Key(com.badlogic.gdx.Input.Keys.W);
 	public static final Key A = new Key(com.badlogic.gdx.Input.Keys.A);
 	public static final Key S = new Key(com.badlogic.gdx.Input.Keys.S);
 	public static final Key D = new Key(com.badlogic.gdx.Input.Keys.D);
 
-	private static final Key[] keys = new Key[]{LEFT, RIGHT, UP, DOWN, SPACE, ESCAPE, LSHIFT, LCTRL, W, A, S, D};
+	private static final Key[] keys = new Key[]{LEFT, RIGHT, UP, DOWN, SPACE, ESCAPE, LSHIFT, LCTRL, ENTER, W, A, S, D};
 	//</editor-fold>
 
 	/**

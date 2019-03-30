@@ -6,17 +6,23 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import game.asteroids.Asteroids;
 import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
-import game.asteroids.entities.*;
+import game.asteroids.entities.Entity;
+import game.asteroids.entities.Player;
+import game.asteroids.entities.SignalAsteroid;
 import game.asteroids.input.Input;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
 import game.asteroids.utility.VectorUtils;
+import systems.CollisionHandler;
+import systems.GUI;
+import systems.Sounds;
+import systems.Timer;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -68,14 +74,17 @@ public class MainScreen implements Screen {
 		new Player(engine);
 
 		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 380, 0))), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
             dispose();
             game.setScreen(new GameScreen(game));
         });
         new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 510, 0))), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
             dispose();
             game.setScreen(new HelpScreen(game));
         });
 		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 640, 0))), () -> {
+			Sounds.play(Sounds.GAME_TRANSITION_1);
 			dispose();
 			Gdx.app.exit();
 		});
@@ -100,7 +109,7 @@ public class MainScreen implements Screen {
                 batch.setProjectionMatrix(camera.combined);
 
 				for (Vector2 v : stars)
-					batch.draw(game.manager.get(Sprites.BULLET_PLAYER, Texture.class), v.x, v.y, 0.1f, 0.1f);
+					batch.draw(game.manager.get(MathUtils.randomSign() == -1 ? Sprites.BULLET_PLAYER : Sprites.BULLET_SAUCER, Texture.class), v.x, v.y, 0.1f, 0.1f);
 				stars.remove(0);
 				stars.add(new Vector2(rand.nextFloat() * 20 - 10, rand.nextFloat() * 14 - 7));
 
@@ -153,6 +162,7 @@ public class MainScreen implements Screen {
         game.manager.load(Sprites.PLAYER_SPRITE, Texture.class);
         game.manager.load(Sprites.PLAYER_BURN, Texture.class);
         game.manager.load(Sprites.BULLET_PLAYER, Texture.class);
+		game.manager.load(Sprites.BULLET_SAUCER, Texture.class);
 
 		game.manager.load(Sprites.ASTEROID_MEDIUM, Texture.class);
         game.manager.load(Sprites.ASTEROID_SMALL, Texture.class);

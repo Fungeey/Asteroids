@@ -10,7 +10,9 @@ import game.asteroids.PhysicsEngine;
 import game.asteroids.input.Input;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
-import game.asteroids.utility.Timer;
+import systems.CollisionHandler;
+import systems.Sounds;
+import systems.Timer;
 
 import java.util.ArrayList;
 
@@ -36,7 +38,7 @@ public class Player extends Entity {
 	private boolean isActive = true;
 
 	public static int lives = 3;
-	static int score;
+	public static int score;
 
 	private Vector2 direction;
 
@@ -56,6 +58,8 @@ public class Player extends Entity {
 		body.setLinearDamping(0.3f);
 
 		respawnTimer = null;
+		lives = 3;
+		setActive(true);
 	}
 
 	@Override
@@ -72,6 +76,8 @@ public class Player extends Entity {
 		direction.setAngle(body.getAngle() * MathUtils.radiansToDegrees + 90);
 
 		if (Input.keyDown(Input.UP)) {
+			Sounds.play(Sounds.PLAYER_THRUST);
+
 			Vector2 thrust = new Vector2(direction).nor().scl(speed);
 			body.applyForceToCenter(thrust, true);
 		}
@@ -86,6 +92,8 @@ public class Player extends Entity {
 		//Shooting
 		if (canShoot) {
 			if(Input.keyPressed(Input.SPACE)) {
+				Sounds.play(Sounds.PLAYER_SHOOT);
+
 				Vector2 vel = new Vector2(direction).nor();
 				new Bullet(engine, Bullet.BulletType.PLAYER, vel.scl(bulletVelocity), body.getPosition());
 				canShoot = false;
@@ -111,9 +119,8 @@ public class Player extends Entity {
 	public void draw(SpriteBatch batch, AssetManager manager) {
 		if(respawnTimer != null && respawnTimer.isRunning() && (MathUtils.round(respawnTimer.progress() * 10)) % 2f == 0)
 			return;
-		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive)
+		else if(respawnTimer != null && !respawnTimer.isRunning() && !isActive) //
 			return;
-
 
 		Vector2 pos = body.getPosition();
 		batch.draw(getSprite(), pos.x - sprite.getOriginX(), pos.y - sprite.getOriginY(), sprite.getOriginX(), sprite.getOriginY(), sprite.getWidth(), sprite.getHeight(), 1 / Sprites.PIXELS_PER_METER, 1 / Sprites.PIXELS_PER_METER, body.getAngle() * MathUtils.radiansToDegrees);
@@ -130,18 +137,23 @@ public class Player extends Entity {
 	}
 
 	@Override
-	void delete(){
+	public void delete(){
 		super.delete();
 		if(coolDownTimer != null)
 			coolDownTimer.clear();
 	}
 
-	void loseLife(){
+	public void loseLife(){
 		if(!(engine.game.getScreen() instanceof GameScreen))
 			return;
 
 		if(!doNextFrame.contains(loseLife)) {
 			doNextFrame.add(loseLife);
+
+			Sounds.play(Sounds.PLAYER_DEATH);
+
+			if(lives - 1 <= 0)
+				return;
 
 			doNextFrame.add(() -> {
 				body.setTransform(new Vector2(0, 0), 0f);
@@ -154,6 +166,7 @@ public class Player extends Entity {
 	}
 
 	private void hyperJump(){
+		Sounds.play(Sounds.PLAYER_JUMP);
 		setActive(false);
 		Timer.startNew(0.5f, () -> {
 			setPosition(randomPosition());
@@ -164,6 +177,11 @@ public class Player extends Entity {
 	private void setActive(boolean active){
 		isActive = active;
 		CollisionHandler.playerInvincible = !active;
+	}
+
+	public void gameOver(){
+		setActive(false);
+		body.setActive(false);
 	}
 
 	Vector2 getPosition(){

@@ -1,16 +1,18 @@
-package game.asteroids.entities;
+package systems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import game.asteroids.entities.Player;
 
 public class GUI {
 	private static BitmapFont font = new BitmapFont(Gdx.files.internal("consolas.fnt"), Gdx.files.internal("consolas.png"), false);
 	private static GlyphLayout textLayout = new GlyphLayout();
 
 	public static void drawScore(SpriteBatch batch){
-		font.draw(batch, Player.score + "", -500, 300);
+		font.draw(batch, "Score: " + Player.score + "", -500, 370);
+		font.draw(batch, "Lives: " + Player.lives + "", -500, 320);
 	}
 
 	private static void drawText(SpriteBatch batch, GlyphLayout text, float x, float y){

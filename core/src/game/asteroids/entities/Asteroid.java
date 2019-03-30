@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
+import systems.CollisionHandler;
+import systems.Sounds;
 
 import java.util.Random;
 
@@ -79,16 +81,21 @@ public class Asteroid extends Entity implements Destructable {
 
 	@Override
 	public void onDestroy() {
+
 		if(size == AsteroidSize.LARGE){
+			Sounds.play(Sounds.EXPLOSION_1);
 			for (int i = 0; i < 2; i++) {
 				Asteroid a = new Asteroid(engine, AsteroidSize.MEDIUM, body.getPosition());
 				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.25f));
 			}
 		}else if(size == AsteroidSize.MEDIUM){
+			Sounds.play(Sounds.EXPLOSION_2);
 			for (int i = 0; i < 2; i++) {
 				Asteroid a = new Asteroid(engine, AsteroidSize.SMALL, body.getPosition());
 				a.body.setLinearVelocity(body.getLinearVelocity().scl(0.25f));
 			}
+		}else{
+			Sounds.play(Sounds.EXPLOSION_3);
 		}
 		engine.numAsteroids--;
 	}

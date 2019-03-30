@@ -11,6 +11,7 @@ import game.asteroids.BodyEditorLoader;
 import game.asteroids.PhysicsEngine;
 import game.asteroids.screens.GameScreen;
 import game.asteroids.utility.Sprites;
+import systems.CollisionHandler;
 
 /**
  * Generic game entity with physics capabilities and a sprite to draw.
@@ -22,7 +23,7 @@ public abstract class Entity {
 	PhysicsEngine engine;
 	Sprite sprite;
 	private String spriteID;
-	short layer;
+	public short layer;
 
 	Entity(PhysicsEngine engine) {
 		this(engine, false);
@@ -141,7 +142,7 @@ public abstract class Entity {
 		return wrapped;
 	}
 
-	void delete() {
+	public void delete() {
 		engine.deleteEntity(this);
 	}
 }
