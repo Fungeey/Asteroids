@@ -75,10 +75,13 @@ public class MainScreen implements Screen {
             dispose();
             game.setScreen(new HelpScreen(game));
         });
-        new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 640, 0))), () -> {
-            dispose();
-            Gdx.app.exit();
-        });
+		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 640, 0))), () -> {
+			dispose();
+			Gdx.app.exit();
+		});
+		new SignalAsteroid(engine, VectorUtils.V3toV2(camera.unproject(new Vector3(800, 800, 0))), () -> {
+			Gdx.net.openURI("https://github.com/lightningstudios126/Asteroids");
+		});
 
     }
 
